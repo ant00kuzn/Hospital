@@ -40,6 +40,7 @@
       <HintPath>..\..\..\..\..\..\Program Files (x86)\MySQL\MySQL Connector NET 8.1.0\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -57,6 +58,12 @@
     </Compile>
     <Compile Include="BedsForm.Designer.cs">
       <DependentUpon>BedsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DatabaseImport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DatabaseImport.Designer.cs">
+      <DependentUpon>DatabaseImport.cs</DependentUpon>
     </Compile>
     <Compile Include="EmployeeManagment.cs">
       <SubType>Form</SubType>
@@ -115,8 +122,12 @@
     <Compile Include="SettingsForm.Designer.cs">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="TwoDimensonal.cs" />
     <EmbeddedResource Include="BedsForm.resx">
       <DependentUpon>BedsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DatabaseImport.resx">
+      <DependentUpon>DatabaseImport.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="EmployeeManagment.resx">
       <DependentUpon>EmployeeManagment.cs</DependentUpon>

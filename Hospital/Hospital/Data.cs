@@ -1,8 +1,11 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Hospital
 {
@@ -18,14 +21,17 @@ namespace Hospital
 
     public static class GlobalValue
     {
-        public static string server = "localhost";
-        public static string db = "hospital";
-        public static string uid = "root";
-        public static string pwd = "";
+        public static bool dbIsntExist = false;
+
+        static string server = ConfigurationManager.AppSettings["host"];
+        static string uid = ConfigurationManager.AppSettings["uid"];
+        static string pwd = ConfigurationManager.AppSettings["password"];
+        static string db = ConfigurationManager.AppSettings["db"];
         //Метод для получения строки подключения
         public static string GetConnString()
         {
             return "server=" + server + ";uid=" + uid + ";pwd=" + pwd + ";database=" + db;
         }
+
     }
 }
