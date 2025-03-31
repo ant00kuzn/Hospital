@@ -24,6 +24,7 @@ namespace Hospital
         }
         private void LoadTables()
         {
+            cbTables.Items.Clear();
             try
             {
                 using (MySqlConnection connection = new MySqlConnection(GlobalValue.GetConnString()))
@@ -39,11 +40,13 @@ namespace Hospital
             catch (MySqlException ex)
             {
                 MessageBox.Show($"Ошибка подключения к базе данных: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                tbFileName.Enabled = false;
                 return;
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Ошибка загрузки списка таблиц: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                tbFileName.Enabled = false;
                 return;
             }
         }
@@ -76,7 +79,7 @@ namespace Hospital
             string csvFilePath = tbFileName.Text;
             string tableName = cbTables.SelectedItem.ToString();
 
-            if (DialogResult.No == MessageBox.Show($"Вы уверены, что хотите импортировать данные в таблицу {tableName}", "Предупреждение", MessageBoxButtons.YesNo, MessageBoxIcon.Stop))
+            if (DialogResult.No == MessageBox.Show($"Вы уверены, что хотите импортировать данные в таблицу {tableName}?", "Предупреждение", MessageBoxButtons.YesNo, MessageBoxIcon.Stop))
             {
                 cbTables.Text = "";
                 tbFileName.Text = "";
@@ -216,7 +219,7 @@ namespace Hospital
 
         private void cbTables_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _ = cbTables.SelectedIndex != 0 ? btnSelectFile.Enabled = true : btnSelectFile.Enabled = false;
+            _ = cbTables.SelectedIndex != -1 ? btnSelectFile.Enabled = true : btnSelectFile.Enabled = false;
         }
 
         private void tbFileName_TextChanged(object sender, EventArgs e)
@@ -240,6 +243,7 @@ namespace Hospital
 
                 MessageBox.Show("Структура базы данных восстановлена.", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 LoadTables();
+                cbTables.Enabled = true;
             }
             catch (Exception ex)
             {
