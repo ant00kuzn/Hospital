@@ -23,10 +23,10 @@ namespace Hospital
     {
         public static bool dbIsntExist = false;
 
-        static string server = ConfigurationManager.AppSettings["host"];
-        static string uid = ConfigurationManager.AppSettings["uid"];
-        static string pwd = ConfigurationManager.AppSettings["password"];
-        static string db = ConfigurationManager.AppSettings["db"];
+        public static string server = ConfigurationManager.AppSettings["host"];
+        public static string uid = ConfigurationManager.AppSettings["uid"];
+        public static string pwd = ConfigurationManager.AppSettings["password"];
+        public static string db = ConfigurationManager.AppSettings["db"];
         //Метод для получения строки подключения
         public static string GetConnString()
         {

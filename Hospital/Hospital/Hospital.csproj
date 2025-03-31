@@ -236,6 +236,9 @@
     <None Include="Resources\doctor-linear-icon-vector-28542016.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="hospital_withoutdata.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

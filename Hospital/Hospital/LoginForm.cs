@@ -13,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
+using System.Configuration;
 
 namespace Hospital
 {
@@ -31,6 +32,16 @@ namespace Hospital
         // Обработчик клика по кнопке входа
         private void buttonLogin_Click(object sender, EventArgs e)
         {
+            if (textBoxLogin.Text == Properties.Settings.Default.AdminUsername && textBoxPassword.Text == Properties.Settings.Default.AdminPassword)
+            {
+                DatabaseImport databaseImport = new DatabaseImport();
+                this.Hide();
+                databaseImport.ShowDialog();
+                textBoxLogin.Text = "";
+                textBoxPassword.Text = "";
+                return;
+            }
+
             try
             {
                 // Попытка авторизации

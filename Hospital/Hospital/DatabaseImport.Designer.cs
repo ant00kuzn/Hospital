@@ -56,6 +56,7 @@ namespace Hospital
             this.tbFileName.ReadOnly = true;
             this.tbFileName.Size = new System.Drawing.Size(278, 31);
             this.tbFileName.TabIndex = 9;
+            this.tbFileName.TextChanged += new System.EventHandler(this.tbFileName_TextChanged);
             // 
             // btnExit
             // 
@@ -66,6 +67,7 @@ namespace Hospital
             this.btnExit.TabIndex = 12;
             this.btnExit.Text = "Выход";
             this.btnExit.UseVisualStyleBackColor = false;
+            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
             // btnRepairStructure
             // 
@@ -88,6 +90,7 @@ namespace Hospital
             this.btnSelectFile.TabIndex = 10;
             this.btnSelectFile.Text = "Выбрать файл";
             this.btnSelectFile.UseVisualStyleBackColor = false;
+            this.btnSelectFile.Click += new System.EventHandler(this.btnSelectFile_Click);
             // 
             // btnImportTable
             // 
@@ -99,6 +102,7 @@ namespace Hospital
             this.btnImportTable.TabIndex = 11;
             this.btnImportTable.Text = "Импортировать";
             this.btnImportTable.UseVisualStyleBackColor = false;
+            this.btnImportTable.Click += new System.EventHandler(this.btnImportTable_Click);
             // 
             // cbTables
             // 
@@ -108,6 +112,7 @@ namespace Hospital
             this.cbTables.Name = "cbTables";
             this.cbTables.Size = new System.Drawing.Size(341, 32);
             this.cbTables.TabIndex = 8;
+            this.cbTables.SelectedIndexChanged += new System.EventHandler(this.cbTables_SelectedIndexChanged);
             // 
             // printDialog1
             // 
@@ -135,6 +140,8 @@ namespace Hospital
             this.Name = "DatabaseImport";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "DatabaseImport";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.DatabseImport_FormClosed);
+            this.Load += new System.EventHandler(this.DatabseImport_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
