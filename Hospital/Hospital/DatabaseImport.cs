@@ -46,19 +46,6 @@ namespace Hospital
                 MessageBox.Show($"Ошибка загрузки списка таблиц: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void DatabseImport_Load(object sender, EventArgs e)
-        {
-            if (DBConnect.DatabaseIsValid())
-            {
-                cbTables.Enabled = true;
-                LoadTables();
-            }
-            else
-            {
-                MessageBox.Show("База данных не доступна или пуста. Выполните восстановление структуры.", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-        }
 
         private void cbTables_SelectedIndexChanged(object sender, EventArgs e)
         {

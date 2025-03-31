@@ -33,5 +33,100 @@ namespace Hospital
             return "server=" + server + ";uid=" + uid + ";pwd=" + pwd + ";database=" + db;
         }
 
+        public static bool DatabaseIsValid()
+        {
+            string host = ConfigurationManager.AppSettings["host"];
+            string uid = ConfigurationManager.AppSettings["uid"];
+            string pass = ConfigurationManager.AppSettings["password"];
+            string db = ConfigurationManager.AppSettings["db"];
+
+            string connectionString = "server=" + host + ";uid=" + uid + ";pwd=" + pass + ";database=" + db;
+
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(connectionString))
+                {
+                    connection.Open();
+                    connection.Close();
+                    return true;
+                }
+            }
+            catch (MySqlException ex)
+            {
+                if (ex.Number == 1049) // Error 1049 - Unknown database
+                {
+                    MessageBox.Show("База данных не существует.  Создайте базу данных.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    GlobalValue.dbIsntExist = true;
+                    return true;
+                }
+                else
+                {
+                    MessageBox.Show($"Ошибка подключения к базе данных: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Произошла ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        public static bool DatabaseIsNotNull()
+        {
+            string host = ConfigurationManager.AppSettings["host"];
+            string uid = ConfigurationManager.AppSettings["uid"];
+            string pass = ConfigurationManager.AppSettings["password"];
+            string db = ConfigurationManager.AppSettings["db"];
+
+            string connectionString = "server=" + host + ";uid=" + uid + ";pwd=" + pass + ";database=" + db;
+
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    using (MySqlCommand command = new MySqlCommand("SHOW TABLES", connection))
+                    {
+                        using (MySqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (!reader.HasRows)
+                            {
+                                MessageBox.Show("База данных пуста.  Произведите восстановление структуры базы данных.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return true;
+                            }
+                        }
+                    }
+                    return true;
+                }
+            }
+            catch (MySqlException ex)
+            {
+                if (ex.Number == 1049) // Error 1049 - Unknown database
+                {
+                    MessageBox.Show("База данных не существует.  Создайте базу данных.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    MessageBox.Show($"Ошибка подключения к базе данных: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Произошла ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        public static string GetConnStringWithoutDB()
+        {
+            string host = ConfigurationManager.AppSettings["host"];
+            string uid = ConfigurationManager.AppSettings["uid"];
+            string pass = ConfigurationManager.AppSettings["password"];
+
+            return "server=" + host + ";uid=" + uid + ";pwd=" + pass + ";";
+        }
     }
 }
