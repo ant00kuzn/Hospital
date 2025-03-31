@@ -32,6 +32,7 @@ namespace Hospital
         // Обработчик клика по кнопке входа
         private void buttonLogin_Click(object sender, EventArgs e)
         {
+            //Если данные для входа соответствуют данным по умолчанию, то вход на форму управления бд 
             if (textBoxLogin.Text == Properties.Settings.Default.AdminUsername && textBoxPassword.Text == Properties.Settings.Default.AdminPassword)
             {
                 DatabaseImport databaseImport = new DatabaseImport();

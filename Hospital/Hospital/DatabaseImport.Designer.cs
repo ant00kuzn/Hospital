@@ -139,7 +139,7 @@ namespace Hospital
             this.MinimumSize = new System.Drawing.Size(504, 291);
             this.Name = "DatabaseImport";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "DatabaseImport";
+            this.Text = "Управление базой данных";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.DatabseImport_FormClosed);
             this.Load += new System.EventHandler(this.DatabseImport_Load);
             this.ResumeLayout(false);

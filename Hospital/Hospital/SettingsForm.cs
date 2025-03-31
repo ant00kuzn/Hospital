@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using MySql.Data.MySqlClient;
+using System.Configuration;
 
 namespace Hospital
 {
@@ -22,28 +23,44 @@ namespace Hospital
 
         private void buttonSave_Click(object sender, EventArgs e)
         {
-            //Сохранение настроек
-            GlobalValue.server = textBoxDatabaseServer.Text;
-            GlobalValue.db = textBoxDatabaseName.Text;
-            GlobalValue.uid = textBoxDatabaseUser.Text;
-            GlobalValue.pwd = textBoxDatabasePassword.Text;
+            //Обращение к сгенерированному файлу конфигурации
+            Configuration config = ConfigurationManager.OpenExeConfiguration(Application.ExecutablePath);
 
-            //Попытка подключения
-            try
-            {
-                MySqlConnection con = new MySqlConnection(GlobalValue.GetConnString());
-                con.Open();
-                con.Close();
-            }
-            catch (Exception ex)
-            {
-                //Подключение не удалось
-                MessageBox.Show("Внимание! При проверке подключения произошла ошибка." + ex.Message, "Ошибка подключения.", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+            var appSettings = config.AppSettings;
 
-            MessageBox.Show("Настройки сохранены.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            this.Close();
+            if (textBoxDatabaseServer.Text != "" && textBoxDatabaseName.Text != "" && textBoxDatabaseUser.Text != "")
+            {
+                //Занесение новых данных с полей
+                appSettings.Settings["host"].Value = textBoxDatabaseServer.Text;
+                appSettings.Settings["db"].Value = textBoxDatabaseName.Text;
+                appSettings.Settings["uid"].Value = textBoxDatabaseUser.Text;
+                appSettings.Settings["password"].Value = textBoxDatabasePassword.Text;
+
+                config.Save(ConfigurationSaveMode.Modified);
+                ConfigurationManager.RefreshSection("appSettings");
+
+                //Проверка подключения
+                if (!GlobalValue.DatabaseIsValid())
+                {
+                    MessageBox.Show("При подключении к базе произошла ошибка. Проверьте правильность введенных данных и повторите попытку.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    textBoxDatabaseServer.Text = "";
+                    textBoxDatabaseName.Text = "";
+                    textBoxDatabaseUser.Text = "";
+                    textBoxDatabasePassword.Text = "";
+                }
+                else
+                {
+                    if (GlobalValue.dbIsntExist)
+                    {
+                        this.Close();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Подключение успешно! Данные сохранены.", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        this.Close();
+                    }
+                }
+            }
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
@@ -119,10 +136,14 @@ namespace Hospital
         //Заполнение полей при открытии формы
         private void SettingsForm_Load(object sender, EventArgs e)
         {
-            textBoxDatabaseName.Text = GlobalValue.db;
-            textBoxDatabaseServer.Text = GlobalValue.server;
-            textBoxDatabaseUser.Text = GlobalValue.uid;
-            textBoxDatabasePassword.Text = GlobalValue.pwd;
+            Configuration config = ConfigurationManager.OpenExeConfiguration(Application.ExecutablePath);
+
+            var appSettings = config.AppSettings;
+
+            textBoxDatabaseServer.Text = appSettings.Settings["host"].Value;
+            textBoxDatabaseName.Text = appSettings.Settings["db"].Value;
+            textBoxDatabaseUser.Text = appSettings.Settings["uid"].Value;
+            textBoxDatabasePassword.Text = appSettings.Settings["password"].Value;
         }
     }
 }

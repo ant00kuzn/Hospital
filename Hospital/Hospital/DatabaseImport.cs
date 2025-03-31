@@ -16,12 +16,14 @@ namespace Hospital
 {
     public partial class DatabaseImport : Form
     {
+        //Получение наименования базы данных
         private string db = ConfigurationManager.AppSettings["db"];
 
         public DatabaseImport()
         {
             InitializeComponent();
         }
+        //Загрузка таблиц
         private void LoadTables()
         {
             cbTables.Items.Clear();
@@ -51,6 +53,7 @@ namespace Hospital
             }
         }
 
+        //Обработчик нажатия на кнопку выбора файла для импорта
         private void btnSelectFile_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -68,8 +71,10 @@ namespace Hospital
             }
         }
 
+        //Обработчик нажатия на кнопку импорта данных
         private void btnImportTable_Click(object sender, EventArgs e)
         {
+            //Проверка на выбранность файла и таблицы
             if (string.IsNullOrWhiteSpace(tbFileName.Text) || cbTables.SelectedItem == null)
             {
                 MessageBox.Show("Пожалуйста, выберите файл и таблицу для импорта.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -79,6 +84,7 @@ namespace Hospital
             string csvFilePath = tbFileName.Text;
             string tableName = cbTables.SelectedItem.ToString();
 
+            //Подтверждение от пользователя
             if (DialogResult.No == MessageBox.Show($"Вы уверены, что хотите импортировать данные в таблицу {tableName}?", "Предупреждение", MessageBoxButtons.YesNo, MessageBoxIcon.Stop))
             {
                 cbTables.Text = "";
@@ -109,6 +115,12 @@ namespace Hospital
             }
         }
 
+        /// <summary>
+        /// Метод для импорта данных из файла csv
+        /// </summary>
+        /// <param name="csvFilePath">Путь до файла</param>
+        /// <param name="tableName">Имя таблицы</param>
+        /// <returns>Количество импортированных записей</returns>
         private int ImportData(string csvFilePath, string tableName)
         {
             string query = "";
@@ -203,6 +215,7 @@ namespace Hospital
             return importedCount;
         }
 
+        //Метод при загрузке формы
         private void DatabseImport_Load(object sender, EventArgs e)
         {
             if (GlobalValue.DatabaseIsValid())
@@ -217,21 +230,24 @@ namespace Hospital
             }
         }
 
+        //Смена таблицы
         private void cbTables_SelectedIndexChanged(object sender, EventArgs e)
         {
             _ = cbTables.SelectedIndex != -1 ? btnSelectFile.Enabled = true : btnSelectFile.Enabled = false;
         }
 
+        //Смена пути до файла
         private void tbFileName_TextChanged(object sender, EventArgs e)
         {
             _ = tbFileName.Text != "" ? btnImportTable.Enabled = true : btnImportTable.Enabled = false;
         }
 
+        //Обработчик нажатия по кнопке восстановления структуры
         private void btnRepairStructure_Click(object sender, EventArgs e)
         {
             try
             {
-                string strcustureFilePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\hospital_withoutdata.sql";
+                string strcustureFilePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\hospital_withoutdata.sql"; //Получение файла со структурой из выходной директории
                 string[] file = File.ReadAllLines(strcustureFilePath, Encoding.Default);
                 string query = $"create database if not exists {db}; use {db}; " + string.Join(" ", file);
 

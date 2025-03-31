@@ -27,12 +27,14 @@ namespace Hospital
         public static string uid = ConfigurationManager.AppSettings["uid"];
         public static string pwd = ConfigurationManager.AppSettings["password"];
         public static string db = ConfigurationManager.AppSettings["db"];
+
         //Метод для получения строки подключения
         public static string GetConnString()
         {
             return "server=" + server + ";uid=" + uid + ";pwd=" + pwd + ";database=" + db;
         }
 
+        //Метод для проверки наличия базы данных
         public static bool DatabaseIsValid()
         {
             string host = ConfigurationManager.AppSettings["host"];
@@ -72,6 +74,7 @@ namespace Hospital
             }
         }
 
+        //Метод для проверки на наличие таблиц в базе данных
         public static bool DatabaseIsNotNull()
         {
             string host = ConfigurationManager.AppSettings["host"];
@@ -120,6 +123,7 @@ namespace Hospital
             }
         }
 
+        //Метод для получения строки подключения без базы данных
         public static string GetConnStringWithoutDB()
         {
             string host = ConfigurationManager.AppSettings["host"];
