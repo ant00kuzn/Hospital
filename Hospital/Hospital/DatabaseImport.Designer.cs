@@ -76,6 +76,7 @@ namespace Hospital
             this.btnRepairStructure.TabIndex = 7;
             this.btnRepairStructure.Text = "Восстановить структуру базы данных";
             this.btnRepairStructure.UseVisualStyleBackColor = false;
+            this.btnRepairStructure.Click += new System.EventHandler(this.btnRepairStructure_Click);
             // 
             // btnSelectFile
             // 
@@ -126,7 +127,7 @@ namespace Hospital
             this.Controls.Add(this.cbTables);
             this.Font = new System.Drawing.Font("Garamond", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.Margin = new System.Windows.Forms.Padding(6);
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(504, 291);
             this.MinimizeBox = false;
