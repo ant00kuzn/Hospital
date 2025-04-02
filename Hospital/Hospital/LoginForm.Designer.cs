@@ -57,7 +57,7 @@ namespace Hospital
             this.buttonLogin.FlatAppearance.BorderSize = 0;
             this.buttonLogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonLogin.ForeColor = System.Drawing.Color.Black;
-            this.buttonLogin.Location = new System.Drawing.Point(67, 368);
+            this.buttonLogin.Location = new System.Drawing.Point(67, 229);
             this.buttonLogin.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonLogin.Name = "buttonLogin";
             this.buttonLogin.Size = new System.Drawing.Size(142, 38);
@@ -117,7 +117,7 @@ namespace Hospital
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(257, 375);
+            this.groupBox1.Size = new System.Drawing.Size(257, 236);
             this.groupBox1.TabIndex = 8;
             this.groupBox1.TabStop = false;
             // 
@@ -162,6 +162,7 @@ namespace Hospital
             this.pictureCaptha.Size = new System.Drawing.Size(196, 100);
             this.pictureCaptha.TabIndex = 11;
             this.pictureCaptha.TabStop = false;
+            this.pictureCaptha.Visible = false;
             // 
             // richTextBoxCaptcha
             // 
@@ -191,13 +192,16 @@ namespace Hospital
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(279, 424);
+            this.ClientSize = new System.Drawing.Size(279, 285);
             this.Controls.Add(this.buttonLogin);
             this.Controls.Add(this.groupBox1);
             this.Font = new System.Drawing.Font("Garamond", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(295, 469);
+            this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(295, 324);
             this.Name = "LoginForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

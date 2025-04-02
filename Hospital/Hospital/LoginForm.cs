@@ -23,7 +23,7 @@ namespace Hospital
     {
         public int LoginAttemps = 0;
         public bool capthaIsVisible = false;
-        private const string BackupFolderName = "Dumps";
+        private const string BackupFolderName = "Buckups";
         // Конструктор формы
         public LoginForm()
         {
@@ -71,7 +71,7 @@ namespace Hospital
                     }
                     else // Если авторизация не удалась
                     {
-                        MessageBox.Show("Не удалось провести авторизацию.", "Ошибка авторизации", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Не удалось провести авторизацию. Блокировка системы на 10 секунд.", "Ошибка авторизации", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         textBoxLogin.Text = ""; // Очистка поля логина
                         textBoxPassword.Text = ""; // Очистка поля пароля
                         LoginAttemps++;
@@ -105,7 +105,6 @@ namespace Hospital
 
                             if (res)
                             {
-                                MessageBox.Show("Добро пожаловать!", "Успешный вход", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 LoginAttemps = 0;
                                 resetCaptha();
 
@@ -113,10 +112,14 @@ namespace Hospital
                                 MainForm mainForm = new MainForm(User.Role);
                                 this.Hide(); // Скрытие формы авторизации
                                 mainForm.ShowDialog();
+
+                                // Очистка полей после выхода из главной формы
+                                textBoxLogin.Text = "";
+                                textBoxPassword.Text = "";
                             }
                             else
                             {
-                                MessageBox.Show("Не удалось провести авторизацию. Повторите попытку входа после ввода капчи.", "Ошибка авторизации", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                MessageBox.Show("Не удалось провести авторизацию. Повторите попытку входа после ввода капчи. Блокировка системы на 10 секунд.", "Ошибка авторизации", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 textBoxLogin.Text = "";
                                 textBoxPassword.Text = "";
                                 richTextBoxCaptcha.Text = "";
@@ -150,27 +153,28 @@ namespace Hospital
                         Thread.Sleep(10000);
                         this.Enabled = true;
 
+                        pictureCaptha.Image = CapthaGenerate.Gena(pictureCaptha.Width, pictureCaptha.Height);
+
                         return;
                     }
-                }
-                else
-                {
-
                 }
             }
         }
 
         public void showCaptha()
         {
-            this.Size = new Size(514, 289);
-            pictureBox1.Image = CapthaGenerate.Gena(pictureBox1.Width, pictureBox1.Height);
+            this.Size = new Size(295, 469);
+            pictureCaptha.Image = CapthaGenerate.Gena(pictureCaptha.Width, pictureCaptha.Height);
             capthaIsVisible = true;
+            pictureCaptha.Visible = true;
         }
 
         public void resetCaptha()
         {
-            this.Size = new Size(314, 289);
+            this.Size = new Size(295, 324);
+            pictureCaptha.Image = null;
             capthaIsVisible = false;
+            pictureCaptha.Visible = true;
         }
 
         private void AutomaticBackup()
@@ -369,6 +373,7 @@ namespace Hospital
         // Обработчик закрытия формы
         private void LoginForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            AutomaticBackup();
             // Подтверждение выхода из приложения
             if (DialogResult.Yes == MessageBox.Show("Вы действительно хотите выйти?", "Подтверждение", MessageBoxButtons.YesNo, MessageBoxIcon.Information))
                 e.Cancel = false; // Закрытие формы
