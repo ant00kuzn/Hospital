@@ -14,12 +14,16 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using System.Configuration;
+using System.IO;
 
 namespace Hospital
 {
     // Класс формы авторизации
     public partial class LoginForm : Form
     {
+        public int LoginAttemps = 0;
+        public bool capthaIsVisible = false;
+        private const string BackupFolderName = "Dumps";
         // Конструктор формы
         public LoginForm()
         {
@@ -32,53 +36,238 @@ namespace Hospital
         // Обработчик клика по кнопке входа
         private void buttonLogin_Click(object sender, EventArgs e)
         {
-            //Если данные для входа соответствуют данным по умолчанию, то вход на форму управления бд 
-            if (textBoxLogin.Text == Properties.Settings.Default.AdminUsername && textBoxPassword.Text == Properties.Settings.Default.AdminPassword)
+            if (LoginAttemps == 0)
             {
-                DatabaseImport databaseImport = new DatabaseImport();
-                this.Hide();
-                databaseImport.ShowDialog();
-                textBoxLogin.Text = "";
-                textBoxPassword.Text = "";
-                return;
-            }
-
-            try
-            {
-                // Попытка авторизации
-                bool res = Authorize(textBoxLogin.Text, textBoxPassword.Text);
-
-                if (res) // Если авторизация успешна
+                //Если данные для входа соответствуют данным по умолчанию, то вход на форму управления бд 
+                if (textBoxLogin.Text == Properties.Settings.Default.AdminUsername && textBoxPassword.Text == Properties.Settings.Default.AdminPassword)
                 {
-                    // Создание и отображение главной формы
-                    MainForm mainForm = new MainForm(User.Role);
-                    this.Hide(); // Скрытие формы авторизации
-                    mainForm.ShowDialog();
-
-                    // Очистка полей после выхода из главной формы
+                    DatabaseImport databaseImport = new DatabaseImport();
+                    this.Hide();
+                    databaseImport.ShowDialog();
                     textBoxLogin.Text = "";
                     textBoxPassword.Text = "";
+                    showCaptha();
+                    return;
                 }
-                else // Если авторизация не удалась
+
+                try
                 {
-                    MessageBox.Show("Не удалось провести авторизацию.", "Ошибка авторизации", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    // Попытка авторизации
+                    bool res = Authorize(textBoxLogin.Text, textBoxPassword.Text);
+
+                    if (res) // Если авторизация успешна
+                    {
+                        LoginAttemps = 0;
+                        resetCaptha();
+
+                        // Создание и отображение главной формы
+                        MainForm mainForm = new MainForm(User.Role);
+                        this.Hide(); // Скрытие формы авторизации
+                        mainForm.ShowDialog();
+
+                        // Очистка полей после выхода из главной формы
+                        textBoxLogin.Text = "";
+                        textBoxPassword.Text = "";
+                    }
+                    else // Если авторизация не удалась
+                    {
+                        MessageBox.Show("Не удалось провести авторизацию.", "Ошибка авторизации", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        textBoxLogin.Text = ""; // Очистка поля логина
+                        textBoxPassword.Text = ""; // Очистка поля пароля
+                        LoginAttemps++;
+                        showCaptha();
+
+                        //Блокировки формы на 10 секунд
+                        this.Enabled = false;
+                        Thread.Sleep(10000);
+                        this.Enabled = true;
+
+                        return;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Возникла ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     textBoxLogin.Text = ""; // Очистка поля логина
                     textBoxPassword.Text = ""; // Очистка поля пароля
-
-                    // Закомментированный код блокировки формы на 10 секунд
-                    //this.Enabled = false;
-                    //Thread.Sleep(10000);
-                    //this.Enabled = true;
-
                     return;
+                }
+            }
+            else
+            {
+                if (capthaIsVisible)
+                {
+                    if (!string.IsNullOrWhiteSpace(richTextBoxCaptcha.Text) && richTextBoxCaptcha.Text.Length == 4 && CapthaGenerate.generatedCaptha == richTextBoxCaptcha.Text.Trim(' '))
+                    {
+                        try
+                        {
+                            bool res = Authorize(textBoxLogin.Text, textBoxPassword.Text);
+
+                            if (res)
+                            {
+                                MessageBox.Show("Добро пожаловать!", "Успешный вход", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                LoginAttemps = 0;
+                                resetCaptha();
+
+                                // Создание и отображение главной формы
+                                MainForm mainForm = new MainForm(User.Role);
+                                this.Hide(); // Скрытие формы авторизации
+                                mainForm.ShowDialog();
+                            }
+                            else
+                            {
+                                MessageBox.Show("Не удалось провести авторизацию. Повторите попытку входа после ввода капчи.", "Ошибка авторизации", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                textBoxLogin.Text = "";
+                                textBoxPassword.Text = "";
+                                richTextBoxCaptcha.Text = "";
+                                LoginAttemps++;
+
+                                this.Enabled = false;
+                                Thread.Sleep(10000);
+                                this.Enabled = true;
+
+                                return;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Возникла ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            textBoxLogin.Text = "";
+                            textBoxPassword.Text = "";
+                            richTextBoxCaptcha.Text = "";
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Капча не введена или неверна. Повторите попытку через 10 секунд.", "Ошибка капчи", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        textBoxLogin.Text = "";
+                        textBoxPassword.Text = "";
+                        richTextBoxCaptcha.Text = "";
+                        LoginAttemps++;
+
+                        this.Enabled = false;
+                        Thread.Sleep(10000);
+                        this.Enabled = true;
+
+                        return;
+                    }
+                }
+                else
+                {
+
+                }
+            }
+        }
+
+        public void showCaptha()
+        {
+            this.Size = new Size(514, 289);
+            pictureBox1.Image = CapthaGenerate.Gena(pictureBox1.Width, pictureBox1.Height);
+            capthaIsVisible = true;
+        }
+
+        public void resetCaptha()
+        {
+            this.Size = new Size(314, 289);
+            capthaIsVisible = false;
+        }
+
+        private void AutomaticBackup()
+        {
+            try
+            {
+                string appDir = AppDomain.CurrentDomain.BaseDirectory;
+                string backupsDir = Path.Combine(appDir, BackupFolderName);
+
+                if (!Directory.Exists(backupsDir))
+                {
+                    Directory.CreateDirectory(backupsDir);
+                }
+
+                string backupFolderName = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                string backupPath = Path.Combine(backupsDir, backupFolderName);
+
+                Directory.CreateDirectory(backupPath);
+
+                BackupDatabase(backupPath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка автоматического резервного копирования: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        public static void BackupDatabase(string backupPath)
+        {
+            try
+            {
+                using (MySqlConnection con = new MySqlConnection(GlobalValue.GetConnString()))
+                {
+                    con.Open();
+
+                    List<string> tableNames = new List<string>();
+                    using (MySqlCommand command = new MySqlCommand("SHOW TABLES", con))
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            tableNames.Add(reader.GetString(0));
+                        }
+                    }
+
+                    foreach (string tableName in tableNames)
+                    {
+                        string csvFilePath = Path.Combine(backupPath, $"{tableName}.csv");
+                        ExportTableToCsv(con, tableName, csvFilePath);
+                    }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Возникла ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                textBoxLogin.Text = ""; // Очистка поля логина
-                textBoxPassword.Text = ""; // Очистка поля пароля
-                return;
+                throw new Exception($"Ошибка при создании резервной копии базы данных: {ex.Message}");
+            }
+        }
+
+        private static void ExportTableToCsv(MySqlConnection connection, string tableName, string filePath)
+        {
+            try
+            {
+                using (StreamWriter writer = new StreamWriter(filePath, false, System.Text.Encoding.UTF8))
+                {
+                    List<string> columnNames = new List<string>();
+                    using (MySqlCommand command = new MySqlCommand($"SHOW COLUMNS FROM `{tableName}`", connection))
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            columnNames.Add(reader.GetString("Field"));
+                        }
+                    }
+
+                    writer.WriteLine(string.Join(";", columnNames));
+
+                    using (MySqlCommand command = new MySqlCommand($"SELECT * FROM `{tableName}`", connection))
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            List<string> rowValues = new List<string>();
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                string value = reader[i].ToString();
+                                value = value.Replace("\"", "\"\"");
+                                value = $"\"{value}\"";
+                                rowValues.Add(value);
+                            }
+                            writer.WriteLine(string.Join(",", rowValues));
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Ошибка при экспорте таблицы {tableName} в CSV: {ex.Message}");
             }
         }
 

@@ -59,6 +59,7 @@
     <Compile Include="BedsForm.Designer.cs">
       <DependentUpon>BedsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="CapthaGenerate.cs" />
     <Compile Include="DatabaseImport.cs">
       <SubType>Form</SubType>
     </Compile>

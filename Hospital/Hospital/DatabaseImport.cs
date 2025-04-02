@@ -250,7 +250,7 @@ namespace Hospital
                 string strcustureFilePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\hospital_withoutdata.sql"; //Получение файла со структурой из выходной директории
                 string[] file = File.ReadAllLines(strcustureFilePath, Encoding.Default);
                 string query = $"create database if not exists {db}; use {db}; " + string.Join(" ", file);
-
+                 
                 MySqlConnection con = new MySqlConnection(GlobalValue.GetConnStringWithoutDB());
                 con.Open();
                 MySqlCommand cmd = new MySqlCommand(query, con);
