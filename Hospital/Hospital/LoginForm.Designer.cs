@@ -37,17 +37,17 @@ namespace Hospital
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.textBoxPassword = new System.Windows.Forms.TextBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.pictureCaptha = new System.Windows.Forms.PictureBox();
             this.richTextBoxCaptcha = new System.Windows.Forms.RichTextBox();
+            this.textBoxPassword = new System.Windows.Forms.TextBox();
             this.picatureReloadCaptcha = new System.Windows.Forms.PictureBox();
+            this.pictureCaptha = new System.Windows.Forms.PictureBox();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picatureReloadCaptcha)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureCaptha)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureCaptha)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picatureReloadCaptcha)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonLogin
@@ -121,49 +121,6 @@ namespace Hospital
             this.groupBox1.TabIndex = 8;
             this.groupBox1.TabStop = false;
             // 
-            // pictureBox2
-            // 
-            this.pictureBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox2.Image = global::Hospital.Properties.Resources.eye_close;
-            this.pictureBox2.Location = new System.Drawing.Point(223, 158);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(30, 25);
-            this.pictureBox2.TabIndex = 10;
-            this.pictureBox2.TabStop = false;
-            this.pictureBox2.Click += new System.EventHandler(this.pictureBox2_Click);
-            // 
-            // textBoxPassword
-            // 
-            this.textBoxPassword.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxPassword.Location = new System.Drawing.Point(23, 155);
-            this.textBoxPassword.MaxLength = 15;
-            this.textBoxPassword.Name = "textBoxPassword";
-            this.textBoxPassword.Size = new System.Drawing.Size(197, 31);
-            this.textBoxPassword.TabIndex = 9;
-            this.textBoxPassword.UseSystemPasswordChar = true;
-            this.textBoxPassword.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxPassword_KeyPress);
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox1.Image = global::Hospital.Properties.Resources.login1;
-            this.pictureBox1.InitialImage = global::Hospital.Properties.Resources.login1;
-            this.pictureBox1.Location = new System.Drawing.Point(201, 20);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(50, 50);
-            this.pictureBox1.TabIndex = 8;
-            this.pictureBox1.TabStop = false;
-            // 
-            // pictureCaptha
-            // 
-            this.pictureCaptha.Location = new System.Drawing.Point(23, 213);
-            this.pictureCaptha.Name = "pictureCaptha";
-            this.pictureCaptha.Size = new System.Drawing.Size(196, 100);
-            this.pictureCaptha.TabIndex = 11;
-            this.pictureCaptha.TabStop = false;
-            this.pictureCaptha.Visible = false;
-            // 
             // richTextBoxCaptcha
             // 
             this.richTextBoxCaptcha.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -178,14 +135,59 @@ namespace Hospital
             this.richTextBoxCaptcha.TabIndex = 12;
             this.richTextBoxCaptcha.Text = "";
             // 
+            // textBoxPassword
+            // 
+            this.textBoxPassword.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxPassword.Location = new System.Drawing.Point(23, 155);
+            this.textBoxPassword.MaxLength = 15;
+            this.textBoxPassword.Name = "textBoxPassword";
+            this.textBoxPassword.Size = new System.Drawing.Size(197, 31);
+            this.textBoxPassword.TabIndex = 9;
+            this.textBoxPassword.UseSystemPasswordChar = true;
+            this.textBoxPassword.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxPassword_KeyPress);
+            // 
             // picatureReloadCaptcha
             // 
             this.picatureReloadCaptcha.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.picatureReloadCaptcha.Location = new System.Drawing.Point(226, 319);
+            this.picatureReloadCaptcha.Image = ((System.Drawing.Image)(resources.GetObject("picatureReloadCaptcha.Image")));
+            this.picatureReloadCaptcha.Location = new System.Drawing.Point(221, 319);
             this.picatureReloadCaptcha.Name = "picatureReloadCaptcha";
             this.picatureReloadCaptcha.Size = new System.Drawing.Size(30, 30);
             this.picatureReloadCaptcha.TabIndex = 13;
             this.picatureReloadCaptcha.TabStop = false;
+            this.picatureReloadCaptcha.Click += new System.EventHandler(this.picatureReloadCaptcha_Click);
+            // 
+            // pictureCaptha
+            // 
+            this.pictureCaptha.Location = new System.Drawing.Point(23, 213);
+            this.pictureCaptha.Name = "pictureCaptha";
+            this.pictureCaptha.Size = new System.Drawing.Size(196, 100);
+            this.pictureCaptha.TabIndex = 11;
+            this.pictureCaptha.TabStop = false;
+            this.pictureCaptha.Visible = false;
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBox2.Image = global::Hospital.Properties.Resources.eye_close;
+            this.pictureBox2.Location = new System.Drawing.Point(223, 158);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(30, 25);
+            this.pictureBox2.TabIndex = 10;
+            this.pictureBox2.TabStop = false;
+            this.pictureBox2.Click += new System.EventHandler(this.pictureBox2_Click);
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBox1.Image = global::Hospital.Properties.Resources.login1;
+            this.pictureBox1.InitialImage = global::Hospital.Properties.Resources.login1;
+            this.pictureBox1.Location = new System.Drawing.Point(201, 20);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(50, 50);
+            this.pictureBox1.TabIndex = 8;
+            this.pictureBox1.TabStop = false;
             // 
             // LoginForm
             // 
@@ -209,10 +211,10 @@ namespace Hospital
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LoginForm_FormClosing);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picatureReloadCaptcha)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureCaptha)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureCaptha)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picatureReloadCaptcha)).EndInit();
             this.ResumeLayout(false);
 
         }

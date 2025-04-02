@@ -118,6 +118,29 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="picatureReloadCaptcha.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1
+        MAAA6mAAADqYAAAXcJy6UTwAAAAHdElNRQfpBAIHOAHHwRRJAAADyklEQVRIS8WXyyt1YRTG/QHuJJHc
+        iigjl4GSUJiYECO3UEaGkpSMGBi5TWQgJnKZGSAykNwKEyEThSIc9/tlff1Wbe322eec/ZWTXW/2Ou9a
+        61nredZ+3wS4XC65vb2Vr68vXbz72wYzgJe7uzv5+PjQxbu/bTADqMJpwG/ZYP4d8P9Q/fn5KQ8PD/L4
+        +Cg839/fajuNN2yl2gnw/f29Ar2+vsrBwYGsrKzI6uqqbG9vy+HhoQ4LD4XZxVttRxrTFcBTU1NSX18v
+        mZmZkpiYKHFxcZKUlCRZWVnS2Ngo09PTcnFxof7e8vHuU2Mo3dvbk7q6OomJiZHg4GAJCQmRyMhIiY6O
+        1r/Y/M4+fjACuF0+w/aqMcFbW1uSl5cnoaGhEhERIbm5udLW1ibj4+MyNzcnk5OT0traKjk5ObqPX35+
+        vqyvr3vt3KPGDMzx8bEUFxdrR9Da2dmpv7H39PSkmvJg7+/vS3t7u8TGxqp/aWmpnJ6eamcega1UMyDv
+        7+/aWVhYmFLY398vNzc3CsK+1Z/uGLDu7m6VgLiOjo6ffbM/77YakwRd09PTlbrm5mbVmgEzAq2JWOwz
+        XAwgXWdkZMjOzo4t5bYaQ2NfX5+Eh4fr9C4uLiqwsW8FNNs88/PzEh8fr5qPjIxoPqu/m8bQgt3U1CRB
+        QUGq8dnZmXZjDrQmYhFLJ2hbUFCg8S0tLbb+bhoDQIUVFRUSGBgoDQ0NqjdJ7RIYNvsAXl9fy9vbm9TU
+        1Gh8ZWWlvLy8uMW7aQwwtJaXl2sgnRuJzYGGv2HzTExMSFdXl1xdXen3TDwNPD8/2wNbqWZ6a2trlaqy
+        sjI5Pz/3STUszc7O6hdQXV2t3zuHCoNpzm/4K9XWDTru6enRiU5NTZW1tTWfw8U+fgwVQ8mJxnANDg56
+        Hi4z1SzGf3NzU5KTk3++R3Sma2sCwyaGC4NCAQQ4KipKhoaGlFafGrNwQhf05XvkIpiZmdGuPFFOjqOj
+        I71AKBZw/hI7MDCgcebCFdhOA0B2d3f15gE8LS1NRkdHNRjq2KdAw5/fmeiSkhI9Nuk8OztbP6uqqio9
+        182d22rMOwtHBoYTDHAGhyTDw8N6CXA3mynE3tjYkOXlZaX95OREi7m8vNTj1JzfVmOzA50sLS1JUVGR
+        Dg2TCo0pKSl6P1uHDpsHzTnXiac4c4H4KtXegFkkofre3l4pLCyUhIQEva3GxsaUdqu/E1uBPVFttqme
+        AjgcoHJhYeHnprLz92V71dhqG5RBp3W47Py92T419pftSGN/2I41/m1bqf6bf9pc8g+wVmXvrH0ftgAA
+        AABJRU5ErkJggg==
+</value>
+  </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         AAABAAEAMjIAAAEAIADIKAAAFgAAACgAAAAyAAAAZAAAAAEAIAAAAAAAECcAABguAAAYLgAAAAAAAAAA

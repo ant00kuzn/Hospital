@@ -380,5 +380,11 @@ namespace Hospital
             else
                 e.Cancel = true; // Отмена закрытия формы
         }
+
+        private void picatureReloadCaptcha_Click(object sender, EventArgs e)
+        {
+            richTextBoxCaptcha.Text = "";
+            pictureCaptha.Image = CapthaGenerate.Gena(pictureCaptha.Width, pictureCaptha.Height);
+        }
     }
 }
