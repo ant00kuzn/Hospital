@@ -43,14 +43,11 @@ namespace Hospital
                     button2.Location = new Point(button2.Location.X, button2.Location.Y - 110);
                     pictureBox1.Visible = true;
                     break;
-                case 2: // Медсестра
-                    buttonPatients.Visible = true;
+                case 2: // Главный врач
                     buttonHospitalizations.Visible = true;
                     buttonBeds.Visible = true;
-                    buttonBeds.Location = new Point(buttonBeds.Location.X, buttonBeds.Location.Y - 50);
-                    buttonHospitalizations.Location = new Point(buttonHospitalizations.Location.X, buttonHospitalizations.Location.Y - 50);
-                    buttonPatients.Location = new Point(buttonPatients.Location.X, buttonPatients.Location.Y - 50);
-                    button2.Location = new Point(button2.Location.X, button2.Location.Y - 50);
+                    buttonBeds.Location = new Point(buttonBeds.Location.X, buttonBeds.Location.Y - 110);
+                    buttonHospitalizations.Location = new Point(buttonHospitalizations.Location.X, buttonHospitalizations.Location.Y - 110);
                     break;
                 case 3: // Врач
                     buttonPatients.Visible = true;
@@ -59,14 +56,12 @@ namespace Hospital
                     buttonBeds.Location = new Point(buttonBeds.Location.X, buttonBeds.Location.Y - 50);
                     buttonHospitalizations.Location = new Point(buttonHospitalizations.Location.X, buttonHospitalizations.Location.Y - 50);
                     buttonPatients.Location = new Point(buttonPatients.Location.X, buttonPatients.Location.Y - 50);
-                    button2.Location = new Point(button2.Location.X, button2.Location.Y - 50);
                     break;
                 case 4: // Регистратура
                     buttonPatients.Visible = true;
                     buttonHospitalizations.Visible = true;
                     buttonHospitalizations.Location = new Point(buttonHospitalizations.Location.X, buttonHospitalizations.Location.Y - 50);
                     buttonPatients.Location = new Point(buttonPatients.Location.X, buttonPatients.Location.Y - 50);
-                    button2.Location = new Point(button2.Location.X, button2.Location.Y - 110);
                     break;
                 default:
                     break;
@@ -77,9 +72,9 @@ namespace Hospital
         private void EnableDisableControls(int role)
         {
             buttonEmployees.Visible = (role == 1); // Только для администратора
-            buttonPatients.Visible = (role != 1); // Для всех, кроме администратора
-            buttonHospitalizations.Visible = (role == 2 || role == 3); // Для медсестры и врача
-            buttonBeds.Visible = (role == 1 || role == 2 || role == 3); // Для администратора, медсестры и врача
+            buttonPatients.Visible = (role == 3 || role == 4); // Для всех, кроме администратора и глав. врача
+            buttonHospitalizations.Visible = (role == 2 || role == 3); // Для главного врача и врача
+            buttonBeds.Visible = (role == 1 || role == 2 || role == 3); // Для администратора, главного врача и врача
             button2.Visible = (role == 1); // Только для администратора
         }
 

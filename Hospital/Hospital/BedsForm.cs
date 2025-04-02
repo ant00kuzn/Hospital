@@ -307,7 +307,7 @@ namespace Hospital
                     }
                 }
             }
-            else
+            else if (e.RowIndex >= 0)
             {
                 dataGridViewBeds.ClearSelection();
                 dataGridViewBeds.Rows[e.RowIndex].Selected = true;

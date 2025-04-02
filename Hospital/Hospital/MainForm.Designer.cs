@@ -57,6 +57,7 @@ namespace Hospital
             this.buttonEmployees.TabIndex = 0;
             this.buttonEmployees.Text = "Сотрудники";
             this.buttonEmployees.UseVisualStyleBackColor = false;
+            this.buttonEmployees.Visible = false;
             this.buttonEmployees.Click += new System.EventHandler(this.buttonEmployees_Click);
             // 
             // buttonPatients
@@ -72,6 +73,7 @@ namespace Hospital
             this.buttonPatients.TabIndex = 1;
             this.buttonPatients.Text = "Пациенты";
             this.buttonPatients.UseVisualStyleBackColor = false;
+            this.buttonPatients.Visible = false;
             this.buttonPatients.Click += new System.EventHandler(this.buttonPatients_Click);
             // 
             // buttonHospitalizations
@@ -87,6 +89,7 @@ namespace Hospital
             this.buttonHospitalizations.TabIndex = 2;
             this.buttonHospitalizations.Text = "Госпитализации";
             this.buttonHospitalizations.UseVisualStyleBackColor = false;
+            this.buttonHospitalizations.Visible = false;
             this.buttonHospitalizations.Click += new System.EventHandler(this.buttonHospitalizations_Click);
             // 
             // buttonBeds
@@ -102,6 +105,7 @@ namespace Hospital
             this.buttonBeds.TabIndex = 3;
             this.buttonBeds.Text = "Коечные места";
             this.buttonBeds.UseVisualStyleBackColor = false;
+            this.buttonBeds.Visible = false;
             this.buttonBeds.Click += new System.EventHandler(this.buttonBeds_Click);
             // 
             // button1
@@ -132,6 +136,7 @@ namespace Hospital
             this.button2.TabIndex = 3;
             this.button2.Text = "Справочники";
             this.button2.UseVisualStyleBackColor = false;
+            this.button2.Visible = false;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // pictureBox1

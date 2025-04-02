@@ -367,7 +367,7 @@ namespace Hospital
 
                     // SQL-запрос для получения данных о госпитализациях
                     string query = @"SELECT h.HospitalizationID, CONCAT(p.PatientSurname, ' ', p.PatientName, ' ', p.PatientPatronymic) AS PatientFIO, " +
-                        "d.DepartmentName, w.TypeOfWard, b.BedStatus, CONCAT(e.EmployeeSurname, ' ', e.EmployeeName, ' ', e.EmployeePatronymic) AS EmployeeFIO," +
+                        "d.DepartmentName, w.TypeOfWard, b.BedStatus, CONCAT(e.EmployeeSurname, ' ', e.EmployeeName, ' ', e.EmployeePatronymic) AS EmployeeFIO, " +
                         "h.DateOfReceipt, h.DateOfDischarge, h.PatientID, h.DepartmentID, h.EmployeeID, h.BedID " +
                         "FROM Hospitalization h " +
                         "INNER JOIN Patient p ON h.PatientID = p.PatientID " +
@@ -375,7 +375,7 @@ namespace Hospital
                         "INNER JOIN Bed b ON h.BedID = b.BedID " +
                         "INNER JOIN Ward w ON b.WardID = w.WardID " +
                         "INNER JOIN Employee e ON h.EmployeeID = e.EmployeeID " +
-                        "ORDER BY HospitalizationID ASC";
+                        "ORDER BY p.PatientSurname ASC";
 
                     using (MySqlCommand command = new MySqlCommand(query, connection))
                     {
@@ -650,6 +650,8 @@ namespace Hospital
                     MessageBox.Show("Госпитализация успешно добавлена, статус койки обновлен.", "Успех.", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadHospitalizationData(); // Обновляем DataGridView
                     LoadBedsData(false);
+
+                    dataGridViewHospitalizations.Rows[dataGridViewHospitalizations.Rows.Count - 1].Selected = true;
 
                     // Очистка полей после добавления
                     ClearInputFields();

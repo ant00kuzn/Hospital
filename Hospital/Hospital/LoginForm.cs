@@ -23,7 +23,7 @@ namespace Hospital
     {
         public int LoginAttemps = 0;
         public bool capthaIsVisible = false;
-        private const string BackupFolderName = "Buckups";
+        private const string BackupFolderName = "Backups";
         // Конструктор формы
         public LoginForm()
         {
@@ -71,16 +71,11 @@ namespace Hospital
                     }
                     else // Если авторизация не удалась
                     {
-                        MessageBox.Show("Не удалось провести авторизацию. Блокировка системы на 10 секунд.", "Ошибка авторизации", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Не удалось провести авторизацию. Повторите попытку входа впосле ввода капчи.", "Ошибка авторизации", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         textBoxLogin.Text = ""; // Очистка поля логина
                         textBoxPassword.Text = ""; // Очистка поля пароля
                         LoginAttemps++;
                         showCaptha();
-
-                        //Блокировки формы на 10 секунд
-                        this.Enabled = false;
-                        Thread.Sleep(10000);
-                        this.Enabled = true;
 
                         return;
                     }
@@ -119,7 +114,7 @@ namespace Hospital
                             }
                             else
                             {
-                                MessageBox.Show("Не удалось провести авторизацию. Повторите попытку входа после ввода капчи. Блокировка системы на 10 секунд.", "Ошибка авторизации", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                MessageBox.Show("Не удалось провести авторизацию. Блокировка системы на 10 секунд.", "Ошибка авторизации", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 textBoxLogin.Text = "";
                                 textBoxPassword.Text = "";
                                 richTextBoxCaptcha.Text = "";
@@ -199,6 +194,7 @@ namespace Hospital
             catch (Exception ex)
             {
                 MessageBox.Show($"Ошибка автоматического резервного копирования: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
         }
 

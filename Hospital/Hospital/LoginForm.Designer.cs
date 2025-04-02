@@ -132,7 +132,7 @@ namespace Hospital
             this.richTextBoxCaptcha.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
             this.richTextBoxCaptcha.ShortcutsEnabled = false;
             this.richTextBoxCaptcha.Size = new System.Drawing.Size(197, 31);
-            this.richTextBoxCaptcha.TabIndex = 12;
+            this.richTextBoxCaptcha.TabIndex = 3;
             this.richTextBoxCaptcha.Text = "";
             // 
             // textBoxPassword
@@ -143,7 +143,7 @@ namespace Hospital
             this.textBoxPassword.MaxLength = 15;
             this.textBoxPassword.Name = "textBoxPassword";
             this.textBoxPassword.Size = new System.Drawing.Size(197, 31);
-            this.textBoxPassword.TabIndex = 9;
+            this.textBoxPassword.TabIndex = 1;
             this.textBoxPassword.UseSystemPasswordChar = true;
             this.textBoxPassword.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxPassword_KeyPress);
             // 

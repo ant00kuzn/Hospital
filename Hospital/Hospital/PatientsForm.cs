@@ -21,7 +21,7 @@ namespace Hospital
         {
             InitializeComponent();
             LoadPatientData(); // Загрузка данных о пациентах
-            if (User.Role == 3)
+            if (User.Role == 4)
             {
                 ContextMenuSetup(); // Настройка контекстного меню
             }
@@ -88,7 +88,7 @@ namespace Hospital
 
                     // SQL-запрос для получения данных о пациентах
                     using (MySqlCommand command = new MySqlCommand("SELECT PatientID, PatientSurname, PatientName, PatientPatronymic, Birthday, Address," +
-                        "PhoneNumber, Insurance_Policy FROM Patient", connection))
+                        "PhoneNumber, Insurance_Policy FROM patient order by PatientSurname ASC", connection))
                     {
                         MySqlDataAdapter adapter = new MySqlDataAdapter(command);
                         patientTable = new DataTable();
@@ -106,7 +106,7 @@ namespace Hospital
                         AddDataGridViewColumn("Address", "Адрес", "Address");
                         AddDataGridViewColumn("PhoneNumber", "Номер телефона", "PhoneNumber");
                         AddDataGridViewColumn("Insurance_Policy", "Страховой полис", "Insurance_Policy");
-                        if (User.Role == 3)
+                        if (User.Role == 4)
                         {
                             AddDeleteButtonColumn(); // Добавляем колонку с кнопкой "Удалить"
                         }
@@ -486,15 +486,7 @@ namespace Hospital
         // Ограничение ввода в поле адреса (только русские буквы, цифры, пробелы и дефисы)
         private void textBoxAddress_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar == (char)Keys.Back)
-            {
-                e.Handled = false;
-                return;
-            }
-            if (!Regex.IsMatch(e.KeyChar.ToString(), @"^[А-Яа-яЁё0-9,.]]+$"))
-            {
-                e.Handled = true;
-            }
+            //kladr
         }
 
         // Обработчик клика по ячейке DataGridView

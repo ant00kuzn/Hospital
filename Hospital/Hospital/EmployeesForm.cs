@@ -44,7 +44,7 @@ namespace Hospital
                 using (MySqlConnection con = new MySqlConnection(GlobalValue.GetConnString()))
                 {
                     con.Open(); // Открытие соединения
-                    using (MySqlCommand cmd = new MySqlCommand($"SELECT EmployeeID, CONCAT(EmployeeSurname, ' ', EmployeeName, ' ', EmployeePatronymic) as EmployeeFIO, Post, Login, Password, role.RoleName, Photo FROM employee INNER JOIN role ON employee.Role = role.RoleID", con))
+                    using (MySqlCommand cmd = new MySqlCommand($"SELECT EmployeeID, CONCAT(EmployeeSurname, ' ', EmployeeName, ' ', EmployeePatronymic) as EmployeeFIO, Post, Login, Password, role.RoleName, Photo FROM employee INNER JOIN role ON employee.Role = role.RoleID order by EmployeeSurname asc", con))
                     {
                         MySqlDataAdapter bedAdapter = new MySqlDataAdapter(cmd);
                         DataTable bedTable = new DataTable();
