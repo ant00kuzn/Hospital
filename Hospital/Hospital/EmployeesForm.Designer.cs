@@ -98,6 +98,7 @@
             // 
             // buttonNextPage
             // 
+            this.buttonNextPage.BackColor = System.Drawing.Color.PowderBlue;
             this.buttonNextPage.Image = ((System.Drawing.Image)(resources.GetObject("buttonNextPage.Image")));
             this.buttonNextPage.Location = new System.Drawing.Point(171, 590);
             this.buttonNextPage.MaximumSize = new System.Drawing.Size(33, 33);
@@ -105,12 +106,12 @@
             this.buttonNextPage.Name = "buttonNextPage";
             this.buttonNextPage.Size = new System.Drawing.Size(33, 33);
             this.buttonNextPage.TabIndex = 18;
-            this.buttonNextPage.UseVisualStyleBackColor = true;
+            this.buttonNextPage.UseVisualStyleBackColor = false;
             this.buttonNextPage.Click += new System.EventHandler(this.buttonNextPage_Click);
             // 
             // buttonPreviousPage
             // 
-            this.buttonPreviousPage.BackColor = System.Drawing.SystemColors.Window;
+            this.buttonPreviousPage.BackColor = System.Drawing.Color.PowderBlue;
             this.buttonPreviousPage.Image = ((System.Drawing.Image)(resources.GetObject("buttonPreviousPage.Image")));
             this.buttonPreviousPage.Location = new System.Drawing.Point(12, 590);
             this.buttonPreviousPage.Name = "buttonPreviousPage";

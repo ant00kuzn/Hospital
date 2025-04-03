@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using MySql.Data.MySqlClient;
 using System.Security.Cryptography;
+using System.IO;
 
 namespace Hospital
 {
@@ -28,10 +29,24 @@ namespace Hospital
             if (employeeId != null)
             {
                 this.button2.Text = "Изменить"; // Режим редактирования
+                this.Text = "Изменение сотрудника";
+                this.labelPassword.Text = "Пароль";
+                toolTip1.SetToolTip(labelPassword, "Если поле оставить пустым, то пароль не изменится.");
             }
             else
             {
                 this.button2.Text = "Добавить"; // Режим добавления
+                this.Text = "Добавление сотрудника";
+
+                toolTip1.SetToolTip(labelPassword, "Является обязательным для заполнения полем");
+                toolTip1.SetToolTip(labelLogin, "Является обязательным для заполнения полем");
+                toolTip1.SetToolTip(label1, "Является обязательным для заполнения полем");
+                toolTip1.SetToolTip(label3, "Является обязательным для заполнения полем");
+
+                label1.Text = "*" + label1.Text;
+                label3.Text = "*" + label3.Text;
+                labelLogin.Text = "*" + labelLogin.Text;
+                labelPassword.Text = "*" + labelPassword.Text;
             }
         }
 
@@ -230,6 +245,12 @@ namespace Hospital
             openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.gif;*.bmp";
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
+                FileInfo fi = new FileInfo(openFileDialog.FileName);
+                if (fi.Length > 16777214)
+                {
+                    MessageBox.Show("Размер картинки превышает максимально допустимый.", "Ошибка выбора картинки.", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
                 Image img = Image.FromFile(openFileDialog.FileName);
                 photoPictureBox.Image = img;
             }
@@ -238,7 +259,13 @@ namespace Hospital
         // Валидация ввода
         private void textBox3_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (!Regex.IsMatch(e.KeyChar.ToString(), @"^[А-Яа-яЁё\s-]+$"))
+            if (e.KeyChar == (char)Keys.Back)
+            {
+                e.Handled = false;
+                return;
+            }
+
+            if (!Regex.IsMatch(e.KeyChar.ToString(), @"^[А-Яа-яЁё\s-]+$") && e.KeyChar == (char)Keys.Delete)
             {
                 e.Handled = true;
             }
@@ -246,7 +273,13 @@ namespace Hospital
 
         private void textBox2_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (!Regex.IsMatch(e.KeyChar.ToString(), @"^[А-Яа-яЁё\s-]+$"))
+            if (e.KeyChar == (char)Keys.Back)
+            {
+                e.Handled = false;
+                return;
+            }
+
+            if (!Regex.IsMatch(e.KeyChar.ToString(), @"^[А-Яа-яЁё\s-]+$") && e.KeyChar == (char)Keys.Delete)
             {
                 e.Handled = true;
             }
@@ -254,7 +287,13 @@ namespace Hospital
 
         private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (!Regex.IsMatch(e.KeyChar.ToString(), @"^[А-Яа-яЁё\s-]+$"))
+            if (e.KeyChar == (char)Keys.Back)
+            {
+                e.Handled = false;
+                return;
+            }
+
+            if (!Regex.IsMatch(e.KeyChar.ToString(), @"^[А-Яа-яЁё\s-]+$") && e.KeyChar == (char)Keys.Delete)
             {
                 e.Handled = true;
             }
@@ -262,7 +301,13 @@ namespace Hospital
 
         private void textBoxLogin_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (!Regex.IsMatch(e.KeyChar.ToString(), @"^[a-zA-Z0-9_]+$"))
+            if (e.KeyChar == (char)Keys.Back)
+            {
+                e.Handled = false;
+                return;
+            }
+
+            if (!Regex.IsMatch(e.KeyChar.ToString(), @"^[a-zA-Z0-9_]+$") && e.KeyChar == (char)Keys.Delete)
             {
                 e.Handled = true;
             }
@@ -270,7 +315,13 @@ namespace Hospital
 
         private void textBoxPassword_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (!Regex.IsMatch(e.KeyChar.ToString(), @"^[a-zA-Z0-9_]+$"))
+            if (e.KeyChar == (char)Keys.Back)
+            {
+                e.Handled = false;
+                return;
+            }
+
+            if (!Regex.IsMatch(e.KeyChar.ToString(), @"^[a-zA-Z0-9_]+$") && e.KeyChar == (char)Keys.Delete)
             {
                 e.Handled = true;
             }

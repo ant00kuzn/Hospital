@@ -134,6 +134,7 @@ namespace Hospital
                 ll[i] = new LinkLabel();
                 ll[i].Text = Convert.ToString(i + 1);
                 ll[i].Name = "page" + i;
+                ll[i].ForeColor = Color.Black;
                 ll[i].AutoSize = true;
                 ll[i].Location = new Point(x, y);
                 ll[i].Click += new EventHandler(LinkLabel_Click);

@@ -29,6 +29,7 @@ namespace Hospital
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EmployeeManagment));
             this.button2 = new System.Windows.Forms.Button();
             this.buttonBrowsePhoto = new System.Windows.Forms.Button();
@@ -44,6 +45,7 @@ namespace Hospital
             this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.photoPictureBox = new System.Windows.Forms.PictureBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.photoPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -51,7 +53,7 @@ namespace Hospital
             // 
             this.button2.BackColor = System.Drawing.Color.PowderBlue;
             this.button2.ForeColor = System.Drawing.SystemColors.Desktop;
-            this.button2.Location = new System.Drawing.Point(468, 272);
+            this.button2.Location = new System.Drawing.Point(693, 272);
             this.button2.Margin = new System.Windows.Forms.Padding(12, 13, 12, 13);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(157, 45);
@@ -62,7 +64,7 @@ namespace Hospital
             // 
             // buttonBrowsePhoto
             // 
-            this.buttonBrowsePhoto.Location = new System.Drawing.Point(423, 205);
+            this.buttonBrowsePhoto.Location = new System.Drawing.Point(648, 205);
             this.buttonBrowsePhoto.Margin = new System.Windows.Forms.Padding(8);
             this.buttonBrowsePhoto.Name = "buttonBrowsePhoto";
             this.buttonBrowsePhoto.Size = new System.Drawing.Size(202, 32);
@@ -83,7 +85,7 @@ namespace Hospital
             this.comboBoxRole.Location = new System.Drawing.Point(125, 204);
             this.comboBoxRole.Margin = new System.Windows.Forms.Padding(8);
             this.comboBoxRole.Name = "comboBoxRole";
-            this.comboBoxRole.Size = new System.Drawing.Size(255, 32);
+            this.comboBoxRole.Size = new System.Drawing.Size(507, 32);
             this.comboBoxRole.TabIndex = 69;
             // 
             // labelRole
@@ -92,16 +94,17 @@ namespace Hospital
             this.labelRole.Location = new System.Drawing.Point(6, 207);
             this.labelRole.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
             this.labelRole.Name = "labelRole";
-            this.labelRole.Size = new System.Drawing.Size(62, 24);
+            this.labelRole.Size = new System.Drawing.Size(57, 24);
             this.labelRole.TabIndex = 68;
-            this.labelRole.Text = "Роль :";
+            this.labelRole.Text = "Роль:";
             // 
             // textBoxPassword
             // 
             this.textBoxPassword.Location = new System.Drawing.Point(125, 111);
             this.textBoxPassword.Margin = new System.Windows.Forms.Padding(8);
+            this.textBoxPassword.MaxLength = 20;
             this.textBoxPassword.Name = "textBoxPassword";
-            this.textBoxPassword.Size = new System.Drawing.Size(255, 31);
+            this.textBoxPassword.Size = new System.Drawing.Size(507, 31);
             this.textBoxPassword.TabIndex = 67;
             this.textBoxPassword.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxPassword_KeyPress);
             // 
@@ -111,16 +114,17 @@ namespace Hospital
             this.labelPassword.Location = new System.Drawing.Point(6, 115);
             this.labelPassword.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
             this.labelPassword.Name = "labelPassword";
-            this.labelPassword.Size = new System.Drawing.Size(86, 24);
+            this.labelPassword.Size = new System.Drawing.Size(81, 24);
             this.labelPassword.TabIndex = 66;
-            this.labelPassword.Text = "Пароль :";
+            this.labelPassword.Text = "Пароль:";
             // 
             // textBoxLogin
             // 
             this.textBoxLogin.Location = new System.Drawing.Point(125, 64);
             this.textBoxLogin.Margin = new System.Windows.Forms.Padding(8);
+            this.textBoxLogin.MaxLength = 20;
             this.textBoxLogin.Name = "textBoxLogin";
-            this.textBoxLogin.Size = new System.Drawing.Size(255, 31);
+            this.textBoxLogin.Size = new System.Drawing.Size(507, 31);
             this.textBoxLogin.TabIndex = 65;
             this.textBoxLogin.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxLogin_KeyPress);
             // 
@@ -130,16 +134,17 @@ namespace Hospital
             this.labelLogin.Location = new System.Drawing.Point(6, 68);
             this.labelLogin.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
             this.labelLogin.Name = "labelLogin";
-            this.labelLogin.Size = new System.Drawing.Size(74, 24);
+            this.labelLogin.Size = new System.Drawing.Size(69, 24);
             this.labelLogin.TabIndex = 64;
-            this.labelLogin.Text = "Логин :";
+            this.labelLogin.Text = "Логин:";
             // 
             // textBox3
             // 
             this.textBox3.Location = new System.Drawing.Point(125, 17);
             this.textBox3.Margin = new System.Windows.Forms.Padding(8);
+            this.textBox3.MaxLength = 200;
             this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(255, 31);
+            this.textBox3.Size = new System.Drawing.Size(507, 31);
             this.textBox3.TabIndex = 59;
             this.textBox3.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox3_KeyPress);
             // 
@@ -149,9 +154,9 @@ namespace Hospital
             this.label3.Location = new System.Drawing.Point(6, 24);
             this.label3.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(67, 24);
+            this.label3.Size = new System.Drawing.Size(62, 24);
             this.label3.TabIndex = 58;
-            this.label3.Text = "ФИО :";
+            this.label3.Text = "ФИО:";
             // 
             // button1
             // 
@@ -172,16 +177,17 @@ namespace Hospital
             this.label1.Location = new System.Drawing.Point(6, 161);
             this.label1.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(117, 24);
+            this.label1.Size = new System.Drawing.Size(112, 24);
             this.label1.TabIndex = 66;
-            this.label1.Text = "Должность :";
+            this.label1.Text = "Должность:";
             // 
             // textBox1
             // 
             this.textBox1.Location = new System.Drawing.Point(125, 158);
             this.textBox1.Margin = new System.Windows.Forms.Padding(8);
+            this.textBox1.MaxLength = 50;
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(255, 31);
+            this.textBox1.Size = new System.Drawing.Size(507, 31);
             this.textBox1.TabIndex = 67;
             this.textBox1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox1_KeyPress);
             // 
@@ -189,7 +195,7 @@ namespace Hospital
             // 
             this.photoPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.photoPictureBox.Image = global::Hospital.Properties.Resources.doctor_linear_icon_vector_285420161;
-            this.photoPictureBox.Location = new System.Drawing.Point(423, 17);
+            this.photoPictureBox.Location = new System.Drawing.Point(648, 17);
             this.photoPictureBox.Margin = new System.Windows.Forms.Padding(8);
             this.photoPictureBox.Name = "photoPictureBox";
             this.photoPictureBox.Size = new System.Drawing.Size(202, 172);
@@ -197,12 +203,18 @@ namespace Hospital
             this.photoPictureBox.TabIndex = 70;
             this.photoPictureBox.TabStop = false;
             // 
+            // toolTip1
+            // 
+            this.toolTip1.BackColor = System.Drawing.Color.PowderBlue;
+            this.toolTip1.ForeColor = System.Drawing.Color.Black;
+            this.toolTip1.ShowAlways = true;
+            // 
             // EmployeeManagment
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(634, 324);
+            this.ClientSize = new System.Drawing.Size(859, 329);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.buttonBrowsePhoto);
             this.Controls.Add(this.photoPictureBox);
@@ -248,5 +260,6 @@ namespace Hospital
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
