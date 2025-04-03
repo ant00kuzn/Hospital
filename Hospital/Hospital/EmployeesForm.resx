@@ -118,6 +118,36 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="buttonNextPage.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6
+        JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAB3RJTUUH6QINDgAH4c/T/gAAARRJREFU
+        WEft1T+uRlAQh2EqpURYi95K1KhsQWkLJCoUNmIFVkGCTvD7MnLyJbe6c5jkFtdbninm8S8M/HEv4AWw
+        AcMwoO97HMehTmRiAZZlQRAEcBwHZVmqU5lYgG3bkKYpDMOAbdsoikJNnsd+BPM8I4qiL0LqTmi9hPQo
+        pBFaAEoaoQ2gJBG3AJQU4jaAIkQcxz8Q53mqKa9HAGpdVyRJAtM0L0TXdWrC6zGAoiu3LOu6E3meq1Ne
+        jwFN08DzvGt5GIYYx1FNeD0C0HLXdb/Lp2lSE363ARLLqVsAqeWUNqCua7HllBZAejnFBrRtK76cYgHo
+        V+z7vvhyigXY9x1VVSHLMu3v/Le0X0LpXsAL+O8A4AMpRFJvmdcSPwAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="buttonPreviousPage.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6
+        JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAB3RJTUUH6QINDgAZG8DunQAAAMRJREFU
+        WEftlj0KxCAUBj2WjdZ6AO/uzyn0Am/5RCGk2aiPyC4OhBQWM0SNCtrMCTgB/xWQc67PCGwBIQQyxpBz
+        biiCJSDGSFprEkLUiFJKG/nOcsBVrpQi730becZSwF2OaRhlOoBDDqYCuORgOIBTDoYCIOtyvBGzyuMA
+        7G1rbZVLKSml1EbW+J0AsHUKOlsXYWfrNuxwRUwHAI6IpQBwj3j1MOpcI3Acv34fAPj8+E9suZB0IB6R
+        A9aAGU7ACdgcQPQBmiZh3oYSbXMAAAAASUVORK5CYII=
+</value>
+  </data>
+  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <data name="label1.ToolTip" xml:space="preserve">
+    <value>Для добавления необходимо нажать ПКМ в любой точке таблицы.
+Для удаления учетной записи сотрудника необходимо выбрать запись и нажать ПКМ.
+Для просмотра более детальной информации о сотруднике дважды нажмите на нужную запись.
+</value>
+  </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         AAABAAEAMjIAAAEAIADIKAAAFgAAACgAAAAyAAAAZAAAAAEAIAAAAAAAECcAABguAAAYLgAAAAAAAAAA
