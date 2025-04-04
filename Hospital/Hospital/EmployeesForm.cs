@@ -21,9 +21,9 @@ namespace Hospital
         private DataView dt; // Представление данных для фильтрации
         private ContextMenuStrip employeeContextMenu; // Контекстное меню
 
-        private DateTime lastActivity = DateTime.Now;
-        private Timer inactive;
-        private bool fclosed = false;
+        private DateTime lastActivity = DateTime.Now; //Последняя активность пользователя
+        private Timer inactive; //Таймер
+        private bool fclosed = false; //Активна ли щас эта форма
 
         private int selectedRowIndex = -1;
         private int currentNumPage = 0;
@@ -32,19 +32,24 @@ namespace Hospital
         {
             InitializeComponent(); // Инициализация компонентов
 
+            //Создаем новый таймер
             inactive = new Timer();
             inactive.Interval = 1000;
             inactive.Tick += Inactive_Tick;
 
+            //Если пользователь что-то сделал сбрасываем таймер
             this.MouseMove += ActivityOccured;
             this.KeyDown += ActivityOccured;
             this.MouseClick += ActivityOccured;
         }
+
+        //метод обработки сброса таймера по действию пользователя
         private void ActivityOccured(object sender, EventArgs e)
         {
             ResetInactivityTimer();
         }
 
+        //Тик таймера с проверкой на истечение таймера
         private void Inactive_Tick(object sender, EventArgs e)
         {
             if(DateTime.Now.Second - lastActivity.Second > Convert.ToInt32(ConfigurationManager.AppSettings["timerInactive"]) - 1)
@@ -53,6 +58,7 @@ namespace Hospital
             }
         }
 
+        //Блокировка системы (переброс на форму авторизации)
         private void LockSystem()
         {
             if (!fclosed)
@@ -71,11 +77,13 @@ namespace Hospital
             }
         }
 
+        //Сброс таймера
         private void ResetInactivityTimer()
         {
             lastActivity = DateTime.Now;
         }
 
+        //Контекстное меню
         private void InitializeContextMenu()
         {
             employeeContextMenu = new ContextMenuStrip(); // Создание контекстного меню
@@ -89,6 +97,7 @@ namespace Hospital
             dataGridViewEmployees.ContextMenuStrip = employeeContextMenu;
         }
 
+        //Удаление пользователя
         private void RemoveEmployeeMenuItem_Click(object sender, EventArgs e)
         {
             if (selectedRowIndex != -1)
@@ -100,6 +109,9 @@ namespace Hospital
             }
         }
 
+        /// <summary>
+        /// Загрузка данных о сотрудниках
+        /// </summary>
         private void LoadEmployeeData()
         {
             try
@@ -174,6 +186,8 @@ namespace Hospital
                 return;
             }
         }
+
+        //Скрытие персональных данных
         private void dataGridViewEmployees_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             if (e.Value != null && e.Value != "")
@@ -182,15 +196,15 @@ namespace Hospital
 
                 switch (dataGridViewEmployees.Columns[e.ColumnIndex].Name)
                 {
-                    case "EmployeeFIO":
+                    case "EmployeeFIO": //фамилия и. о.
                         e.Value = val.Split(' ')[0];
-                        e.Value += " " + val.Split(' ')[1][0].ToString();
-                        e.Value += " " + val.Split(' ')[2][0].ToString();
+                        e.Value += " " + val.Split(' ')[1][0].ToString() + ".";
+                        e.Value += " " + val.Split(' ')[2][0].ToString() + ".";
                         break;
-                    case "Phone":
-                        e.Value = val.Substring(0, 8) + "******";
+                    case "Phone": //+7952763****
+                        e.Value = val.Substring(0, 8) + "****";
                         break;
-                    case "Login":
+                    case "Login": //ku****
                         if (val.Length < 3)
                         {
                             e.Value = val.Substring(0, 2) + "****";
@@ -201,7 +215,8 @@ namespace Hospital
                 }
             }
         }
-
+        #region pagination
+        //Добавление пагинации
         void Pagination()
         {
             dataGridViewEmployees.CurrentCell = null;
@@ -245,6 +260,7 @@ namespace Hospital
             DisplayData(currentNumPage, pageSize);
         }
 
+        //Очищение пагинации
         private void ClearPaginationUI()
         {
             // Удаляем LinkLabel служащие для пагинации
@@ -262,6 +278,7 @@ namespace Hospital
             }
         }
 
+        //Установка активной страницы пагинации
         private void SetActivePage(int pageNum, LinkLabel[] ll)
         {
             // Сбрасываем подчеркивание у всех LinkLabel
@@ -296,6 +313,7 @@ namespace Hospital
             }
         }
 
+        //Предыдущая страница пагинации
         private void buttonPreviousPage_Click(object sender, EventArgs e)
         {
             if (currentNumPage > 0)
@@ -305,6 +323,7 @@ namespace Hospital
             }
         }
 
+        //Слпедующая страница пагинации
         private void buttonNextPage_Click(object sender, EventArgs e)
         {
             int pageSize = 20;
@@ -318,6 +337,7 @@ namespace Hospital
             }
         }
 
+        //Обновление данных, согласно странице пагинации
         private void DisplayData(int pageNum, int pageSize)
         {
             int start = pageNum * pageSize;
@@ -340,6 +360,8 @@ namespace Hospital
             dataGridViewEmployees.Refresh();
             UpdateButtonState();
         }
+
+        //Обновление сосоятние кнопок вперед и назад
         private void UpdateButtonState()
         {
             int pageSize = 20;
@@ -349,7 +371,8 @@ namespace Hospital
             buttonPreviousPage.Enabled = (currentNumPage > 0);
             buttonNextPage.Enabled = (currentNumPage < totalPages - 1);
         }
-
+#endregion
+        //Загрузка ролей в comboBox
         private void LoadRoles()
         {
             roleFilterComboBox.DataSource = null;
@@ -380,26 +403,23 @@ namespace Hospital
             }
         }
 
+        //Подробный просмотр информации о пользователе / редактирование
         private void DataGridViewEmployees_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
             {
-                EditEmployee(e.RowIndex); // Редактирование сотрудника при двойном клике
+                DataRowView row = (DataRowView)dataGridViewEmployees.Rows[e.RowIndex].DataBoundItem;
+                if (row != null)
+                {
+                    OpenEmployeeManagementForm((int)row["EmployeeID"]); // Открытие формы редактирования
+                } 
             }
         }
 
+        //Добавление  пользователя
         private void AddEmployeeMenuItem_Click(object sender, EventArgs e)
         {
             OpenEmployeeManagementForm(null); // Открытие формы добавления
-        }
-
-        private void EditEmployee(int rowIndex)
-        {
-            DataRowView row = (DataRowView)dataGridViewEmployees.Rows[rowIndex].DataBoundItem;
-            if (row != null)
-            {
-                OpenEmployeeManagementForm((int)row["EmployeeID"]); // Открытие формы редактирования
-            }
         }
 
         private void OpenEmployeeManagementForm(int? employeeId)
@@ -411,6 +431,7 @@ namespace Hospital
             }
         }
 
+        //Строка поиска
         private void SearchTextBox_TextChanged(object sender, EventArgs e)
         {
             if (searchTextBox.Text == "Начните ввод для поиска по фио сотрудника...")
@@ -437,6 +458,7 @@ namespace Hospital
             currentNumPage = 0;
         }
 
+        //Фильтр по роли
         private void RoleFilterComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Сначала показываем все строки, чтобы избежать проблем при переключении страниц
@@ -563,6 +585,7 @@ namespace Hospital
             this.Close();
         }
 
+        //Остановка таймера
         private void EmployeesForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             inactive.Stop();
