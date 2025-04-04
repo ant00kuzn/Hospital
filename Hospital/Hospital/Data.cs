@@ -19,6 +19,7 @@ namespace Hospital
         public static string Patronymic { get; set; }
     }
 
+    //Глобальные переменные
     public static class GlobalValue
     {
         public static bool dbIsntExist = false;

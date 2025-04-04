@@ -215,6 +215,7 @@ namespace Hospital
                 }
             }
         }
+
         #region pagination
         //Добавление пагинации
         void Pagination()
@@ -372,6 +373,7 @@ namespace Hospital
             buttonNextPage.Enabled = (currentNumPage < totalPages - 1);
         }
 #endregion
+
         //Загрузка ролей в comboBox
         private void LoadRoles()
         {

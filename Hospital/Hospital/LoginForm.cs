@@ -21,9 +21,9 @@ namespace Hospital
     // Класс формы авторизации
     public partial class LoginForm : Form
     {
-        public int LoginAttemps = 0;
-        public bool capthaIsVisible = false;
-        private const string BackupFolderName = "Backups";
+        public int LoginAttemps = 0; //Счетчик попыток входа
+        public bool capthaIsVisible = false; //Видимость капчи
+        private const string BackupFolderName = "Backups"; //Название папки для автоматического резервного копирования
 
         private bool inactive = false;
         // Конструктор формы
@@ -34,7 +34,7 @@ namespace Hospital
             textBoxLogin.Text = ""; // Очистка поля логина
             textBoxPassword.Text = ""; // Очистка поля пароля
         }
-
+        //Конструктор формы при инактиве пользователя
         public LoginForm(bool inactive)
         {
             InitializeComponent();
@@ -196,6 +196,7 @@ namespace Hospital
             }
         }
 
+        //Отображение капчи
         public void showCaptha()
         {
             this.Size = new Size(295, 469);
@@ -204,6 +205,7 @@ namespace Hospital
             pictureCaptha.Visible = true;
         }
 
+        //Скрытие капчи
         public void resetCaptha()
         {
             this.Size = new Size(295, 324);
@@ -212,6 +214,7 @@ namespace Hospital
             pictureCaptha.Visible = true;
         }
 
+        # region Автоматическое резервное копирование
         private void AutomaticBackup()
         {
             try
@@ -310,6 +313,7 @@ namespace Hospital
                 throw new Exception($"Ошибка при экспорте таблицы {tableName} в CSV: {ex.Message}");
             }
         }
+        #endregion
 
         // Ограничение ввода в поле логина (только латинские буквы и подчеркивание)
         private void textBoxLogin_KeyPress(object sender, KeyPressEventArgs e)
@@ -424,6 +428,7 @@ namespace Hospital
             }
         }
 
+        //Обноление капчи
         private void picatureReloadCaptcha_Click(object sender, EventArgs e)
         {
             richTextBoxCaptcha.Text = "";

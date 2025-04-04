@@ -21,6 +21,11 @@ namespace Hospital
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Сохранение настроек
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void buttonSave_Click(object sender, EventArgs e)
         {
             //Обращение к сгенерированному файлу конфигурации

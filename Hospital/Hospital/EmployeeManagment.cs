@@ -50,6 +50,9 @@ namespace Hospital
             }
         }
 
+        /// <summary>
+        /// Загрузка данных о пользователе
+        /// </summary>
         private void LoadData()
         {
             LoadRoles(); // Загрузка списка ролей
@@ -100,6 +103,10 @@ namespace Hospital
             }
         }
 
+
+        /// <summary>
+        /// Загрузка ролей в comboBox
+        /// </summary>
         private void LoadRoles()
         {
             using (MySqlConnection connection = new MySqlConnection(GlobalValue.GetConnString()))
@@ -127,6 +134,8 @@ namespace Hospital
             }
         }
 
+
+        //Сохоранение изменений
         private void SaveButton_Click(object sender, EventArgs e)
         {
             using (MySqlConnection connection = new MySqlConnection(GlobalValue.GetConnString()))
