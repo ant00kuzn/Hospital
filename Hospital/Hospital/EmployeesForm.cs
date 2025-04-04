@@ -60,7 +60,7 @@ namespace Hospital
                 using (MySqlConnection con = new MySqlConnection(GlobalValue.GetConnString()))
                 {
                     con.Open(); // Открытие соединения
-                    using (MySqlCommand cmd = new MySqlCommand($"SELECT EmployeeID, CONCAT(EmployeeSurname, ' ', EmployeeName, ' ', EmployeePatronymic) as EmployeeFIO, Post, Login, Password, role.RoleName, Photo FROM employee INNER JOIN role ON employee.Role = role.RoleID order by EmployeeSurname asc", con))
+                    using (MySqlCommand cmd = new MySqlCommand($"SELECT EmployeeID, EmployeeSurname, CONCAT(EmployeeSurname, ' ', EmployeeName, ' ', EmployeePatronymic) as EmployeeFIO, Post, Phone, Login, Password, role.RoleName, Photo FROM employee INNER JOIN role ON employee.Role = role.RoleID order by EmployeeSurname asc", con))
                     {
                         MySqlDataAdapter bedAdapter = new MySqlDataAdapter(cmd);
                         DataTable bedTable = new DataTable();
@@ -72,32 +72,50 @@ namespace Hospital
                         // Добавление колонок в DataGridView
                         DataGridViewTextBoxColumn employeeID = new DataGridViewTextBoxColumn();
                         employeeID.DataPropertyName = "EmployeeID";
+                        employeeID.DataPropertyName = "EmployeeID";
                         employeeID.HeaderText = "ID";
                         dataGridViewEmployees.Columns.Add(employeeID);
 
+                        DataGridViewTextBoxColumn employeeSurname = new DataGridViewTextBoxColumn();
+                        employeeSurname.DataPropertyName = "EmployeeSurname";
+                        employeeSurname.DataPropertyName = "EmployeeSurname";
+                        employeeSurname.HeaderText = "EmployeeSurname";
+                        dataGridViewEmployees.Columns.Add(employeeSurname);
+
                         DataGridViewTextBoxColumn employeeFIo = new DataGridViewTextBoxColumn();
                         employeeFIo.DataPropertyName = "EmployeeFIO";
+                        employeeFIo.Name = "EmployeeFIO";
                         employeeFIo.HeaderText = "ФИО Сотрудника";
                         dataGridViewEmployees.Columns.Add(employeeFIo);
 
                         DataGridViewTextBoxColumn post = new DataGridViewTextBoxColumn();
                         post.DataPropertyName = "Post";
+                        post.Name = "Post";
                         post.HeaderText = "Должность";
                         dataGridViewEmployees.Columns.Add(post);
 
+                        DataGridViewTextBoxColumn phone = new DataGridViewTextBoxColumn();
+                        phone.DataPropertyName = "Phone";
+                        phone.Name = "Phone";
+                        phone.HeaderText = "Номер телефона";
+                        dataGridViewEmployees.Columns.Add(phone);
+
                         DataGridViewTextBoxColumn Role = new DataGridViewTextBoxColumn();
                         Role.DataPropertyName = "RoleName";
+                        Role.Name = "RoleName";
                         Role.HeaderText = "Роль";
                         dataGridViewEmployees.Columns.Add(Role);
 
                         DataGridViewTextBoxColumn Login = new DataGridViewTextBoxColumn();
                         Login.DataPropertyName = "Login";
+                        Login.Name = "Login";
                         Login.HeaderText = "Логин";
                         dataGridViewEmployees.Columns.Add(Login);
 
                         dt = bedTable.DefaultView; // Установка представления данных
                         dataGridViewEmployees.DataSource = dt; // Привязка данных
                         dataGridViewEmployees.Columns[0].Visible = false; // Скрытие колонки ID
+                        dataGridViewEmployees.Columns[1].Visible = false; // Скрытие колонки surname
                         dataGridViewEmployees.Refresh(); // Обновление DataGridView
                     }
                     con.Close(); // Закрытие соединения
@@ -107,6 +125,33 @@ namespace Hospital
             {
                 MessageBox.Show($"{ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
+            }
+        }
+        private void dataGridViewEmployees_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.Value != null && e.Value != "")
+            {
+                string val = e.Value.ToString();
+
+                switch (dataGridViewEmployees.Columns[e.ColumnIndex].Name)
+                {
+                    case "EmployeeFIO":
+                        e.Value = val.Split(' ')[0];
+                        e.Value += " " + val.Split(' ')[1][0].ToString();
+                        e.Value += " " + val.Split(' ')[2][0].ToString();
+                        break;
+                    case "Phone":
+                        e.Value = val.Substring(0, 8) + "******";
+                        break;
+                    case "Login":
+                        if (val.Length < 3)
+                        {
+                            e.Value = val.Substring(0, 2) + "****";
+                            break;
+                        }
+                        e.Value = val.Substring(0, 3) + "****";
+                        break;
+                }
             }
         }
 
@@ -332,7 +377,7 @@ namespace Hospital
                 row.Visible = true;
             }
 
-            string filter = $"EmployeeFIO LIKE '%{searchTextBox.Text}%'"; // Фильтр по ФИО
+            string filter = $"EmployeeSurname LIKE '%{searchTextBox.Text}%'"; // Фильтр по фамилии
             if (roleFilterComboBox.SelectedValue != null && roleFilterComboBox.SelectedIndex != 0)
             {
                 filter += $" AND RoleName = '{roleFilterComboBox.SelectedValue}'"; // Фильтр по роли
@@ -364,7 +409,7 @@ namespace Hospital
                 {
                     filter += " AND ";
                 }
-                filter += $"EmployeeFIO LIKE '%{searchTextBox.Text}%'"; // Фильтр по фамилии
+                filter += $"EmployeeSurname LIKE '%{searchTextBox.Text}%'"; // Фильтр по фамилии
             }
             dt.RowFilter = filter; // Применение фильтра
 

@@ -62,7 +62,7 @@ namespace Hospital
                     {
                         connection.Open();
                         // Запрос данных сотрудника
-                        string query = "SELECT CONCAT(EmployeeSurname, ' ', EmployeeName, ' ', EmployeePatronymic) as EmployeeFIO, Post, Login, Password, Role, Photo FROM employee WHERE EmployeeID = @EmployeeID";
+                        string query = "SELECT CONCAT(EmployeeSurname, ' ', EmployeeName, ' ', EmployeePatronymic) as EmployeeFIO, Post, PassportDetails, Phone, Login, Password, Role, Photo FROM employee WHERE EmployeeID = @EmployeeID";
                         MySqlCommand command = new MySqlCommand(query, connection);
                         command.Parameters.AddWithValue("@EmployeeID", employeeId.Value);
 
@@ -76,6 +76,8 @@ namespace Hospital
                                 textBoxLogin.Text = reader["Login"].ToString();
                                 password = reader["Password"].ToString(); // Сохранение хэша пароля
                                 comboBoxRole.SelectedValue = Convert.ToInt32(reader["Role"]);
+                                maskedTextBox2.Text = reader["PassportDetails"].ToString();
+                                maskedTextBox1.Text = reader["Phone"].ToString();
 
                                 // Загрузка фото, если есть
                                 if (reader["Photo"] != DBNull.Value)
@@ -324,6 +326,31 @@ namespace Hospital
             if (!Regex.IsMatch(e.KeyChar.ToString(), @"^[a-zA-Z0-9_]+$") && e.KeyChar == (char)Keys.Delete)
             {
                 e.Handled = true;
+            }
+        }
+
+        private void maskedTextBox1_Leave(object sender, EventArgs e)
+        {
+            string phoneNumberText = maskedTextBox1.Text.Replace("(", "").Replace(")", "").Replace("-", "").Replace(" ", "");
+            if (!Regex.IsMatch(phoneNumberText, @"^\+7\d{10}$"))
+            {
+                MessageBox.Show("Неверный формат номера телефона. Пример: +7 (9XX) XXX-XX-XX", "Ошибка ввода", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                maskedTextBox1.Focus();
+            }
+        }
+
+        private void textBoxAddress_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            //kladr
+        }
+
+        private void maskedTextBox2_Leave(object sender, EventArgs e)
+        {
+            string passport = maskedTextBox2.Text.Replace(" ", "");
+            if (!Regex.IsMatch(passport, @"^\d{10}$"))
+            {
+                MessageBox.Show("Неверный формат паспорта (серия номер). Пример: **** ******", "Ошибка ввода", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                maskedTextBox2.Focus();
             }
         }
     }

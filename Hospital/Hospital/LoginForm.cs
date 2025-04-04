@@ -260,7 +260,7 @@ namespace Hospital
                                 value = $"\"{value}\"";
                                 rowValues.Add(value);
                             }
-                            writer.WriteLine(string.Join(",", rowValues));
+                            writer.WriteLine(string.Join(";", rowValues));
                         }
                     }
                 }

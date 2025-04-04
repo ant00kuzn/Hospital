@@ -46,6 +46,12 @@ namespace Hospital
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.photoPictureBox = new System.Windows.Forms.PictureBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.labelPassport = new System.Windows.Forms.Label();
+            this.labelPhone = new System.Windows.Forms.Label();
+            this.textBoxAddress = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.maskedTextBox1 = new System.Windows.Forms.MaskedTextBox();
+            this.maskedTextBox2 = new System.Windows.Forms.MaskedTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.photoPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -53,7 +59,7 @@ namespace Hospital
             // 
             this.button2.BackColor = System.Drawing.Color.PowderBlue;
             this.button2.ForeColor = System.Drawing.SystemColors.Desktop;
-            this.button2.Location = new System.Drawing.Point(693, 272);
+            this.button2.Location = new System.Drawing.Point(693, 365);
             this.button2.Margin = new System.Windows.Forms.Padding(12, 13, 12, 13);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(157, 45);
@@ -64,7 +70,7 @@ namespace Hospital
             // 
             // buttonBrowsePhoto
             // 
-            this.buttonBrowsePhoto.Location = new System.Drawing.Point(648, 205);
+            this.buttonBrowsePhoto.Location = new System.Drawing.Point(648, 204);
             this.buttonBrowsePhoto.Margin = new System.Windows.Forms.Padding(8);
             this.buttonBrowsePhoto.Name = "buttonBrowsePhoto";
             this.buttonBrowsePhoto.Size = new System.Drawing.Size(202, 32);
@@ -162,7 +168,7 @@ namespace Hospital
             // 
             this.button1.BackColor = System.Drawing.Color.PowderBlue;
             this.button1.ForeColor = System.Drawing.SystemColors.Desktop;
-            this.button1.Location = new System.Drawing.Point(10, 272);
+            this.button1.Location = new System.Drawing.Point(10, 365);
             this.button1.Margin = new System.Windows.Forms.Padding(12, 13, 12, 13);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(156, 45);
@@ -209,12 +215,76 @@ namespace Hospital
             this.toolTip1.ForeColor = System.Drawing.Color.Black;
             this.toolTip1.ShowAlways = true;
             // 
+            // labelPassport
+            // 
+            this.labelPassport.AutoSize = true;
+            this.labelPassport.Location = new System.Drawing.Point(393, 259);
+            this.labelPassport.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
+            this.labelPassport.Name = "labelPassport";
+            this.labelPassport.Size = new System.Drawing.Size(91, 24);
+            this.labelPassport.TabIndex = 73;
+            this.labelPassport.Text = "Паспорт:";
+            // 
+            // labelPhone
+            // 
+            this.labelPhone.AutoSize = true;
+            this.labelPhone.Location = new System.Drawing.Point(6, 263);
+            this.labelPhone.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
+            this.labelPhone.Name = "labelPhone";
+            this.labelPhone.Size = new System.Drawing.Size(94, 24);
+            this.labelPhone.TabIndex = 75;
+            this.labelPhone.Text = "Телефон:";
+            // 
+            // textBoxAddress
+            // 
+            this.textBoxAddress.Location = new System.Drawing.Point(125, 306);
+            this.textBoxAddress.Margin = new System.Windows.Forms.Padding(8);
+            this.textBoxAddress.MaxLength = 20;
+            this.textBoxAddress.Name = "textBoxAddress";
+            this.textBoxAddress.Size = new System.Drawing.Size(507, 31);
+            this.textBoxAddress.TabIndex = 78;
+            this.textBoxAddress.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxAddress_KeyPress);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(6, 310);
+            this.label5.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(68, 24);
+            this.label5.TabIndex = 77;
+            this.label5.Text = "Адрес:";
+            // 
+            // maskedTextBox1
+            // 
+            this.maskedTextBox1.Location = new System.Drawing.Point(125, 256);
+            this.maskedTextBox1.Mask = "+7(999) 000-0000";
+            this.maskedTextBox1.Name = "maskedTextBox1";
+            this.maskedTextBox1.Size = new System.Drawing.Size(225, 31);
+            this.maskedTextBox1.TabIndex = 79;
+            this.maskedTextBox1.Leave += new System.EventHandler(this.maskedTextBox1_Leave);
+            // 
+            // maskedTextBox2
+            // 
+            this.maskedTextBox2.Location = new System.Drawing.Point(495, 256);
+            this.maskedTextBox2.Mask = "0000 000000";
+            this.maskedTextBox2.Name = "maskedTextBox2";
+            this.maskedTextBox2.Size = new System.Drawing.Size(137, 31);
+            this.maskedTextBox2.TabIndex = 80;
+            this.maskedTextBox2.Leave += new System.EventHandler(this.maskedTextBox2_Leave);
+            // 
             // EmployeeManagment
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(859, 329);
+            this.ClientSize = new System.Drawing.Size(859, 418);
+            this.Controls.Add(this.maskedTextBox2);
+            this.Controls.Add(this.maskedTextBox1);
+            this.Controls.Add(this.textBoxAddress);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.labelPhone);
+            this.Controls.Add(this.labelPassport);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.buttonBrowsePhoto);
             this.Controls.Add(this.photoPictureBox);
@@ -261,5 +331,11 @@ namespace Hospital
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.Label labelPassport;
+        private System.Windows.Forms.Label labelPhone;
+        private System.Windows.Forms.TextBox textBoxAddress;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.MaskedTextBox maskedTextBox1;
+        private System.Windows.Forms.MaskedTextBox maskedTextBox2;
     }
 }
