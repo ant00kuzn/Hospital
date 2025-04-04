@@ -162,7 +162,7 @@ namespace Hospital
                     if (employeeId.HasValue) // Режим обновления
                     {
                         query = @"UPDATE employee SET EmployeeSurname = @EmployeeSurname, EmployeeName = @EmployeeName, EmployeePatronymic = @EmployeePatronymic,
-                                Post = @Post, Login = @Login, Password = @Password, Role = @Role, Photo = @Photo
+                                Post = @Post, PassportDetails = @Passport, Phone = @Phone, Address = @Address, Login = @Login, Password = @Password, Role = @Role, Photo = @Photo
                                 WHERE EmployeeID = @EmployeeID";
                     }
                     else // Режим добавления
@@ -181,8 +181,8 @@ namespace Hospital
                             }
                         }
 
-                        query = @"INSERT INTO employee (EmployeeSurname, EmployeeName, EmployeePatronymic, Post, Login, Password, Role, Photo) 
-                                VALUES (@EmployeeSurname, @EmployeeName, @EmployeePatronymic, @Post, @Login, @Password, @Role, @Photo)";
+                        query = @"INSERT INTO employee (EmployeeSurname, EmployeeName, EmployeePatronymic, Post, PassportDetails, Phone, Address Login, Password, Role, Photo) 
+                                VALUES (@EmployeeSurname, @EmployeeName, @EmployeePatronymic, @Post, @Passport, @Phone, @Address, @Login, @Password, @Role, @Photo)";
                     }
 
                     MySqlCommand command = new MySqlCommand(query, connection);
@@ -191,6 +191,9 @@ namespace Hospital
                     command.Parameters.AddWithValue("@EmployeeName", textBox3.Text.Split(' ')[1]);
                     command.Parameters.AddWithValue("@EmployeePatronymic", textBox3.Text.Split(' ')[2]);
                     command.Parameters.AddWithValue("@Post", textBox1.Text);
+                    command.Parameters.AddWithValue("@Passport", maskedTextBox2.Text);
+                    command.Parameters.AddWithValue("@Phone", maskedTextBox1.Text);
+                    command.Parameters.AddWithValue("@Address", textBoxAddress.Text);
                     command.Parameters.AddWithValue("@Login", textBoxLogin.Text);
                     command.Parameters.AddWithValue("@Password", password);
                     command.Parameters.AddWithValue("@Role", comboBoxRole.SelectedValue);
