@@ -35,6 +35,7 @@ namespace Hospital
                 appSettings.Settings["db"].Value = textBoxDatabaseName.Text;
                 appSettings.Settings["uid"].Value = textBoxDatabaseUser.Text;
                 appSettings.Settings["password"].Value = textBoxDatabasePassword.Text;
+                appSettings.Settings["timerInactive"].Value = numericUpDown1.Value.ToString();
 
                 config.Save(ConfigurationSaveMode.Modified);
                 ConfigurationManager.RefreshSection("appSettings");
@@ -47,6 +48,7 @@ namespace Hospital
                     textBoxDatabaseName.Text = "";
                     textBoxDatabaseUser.Text = "";
                     textBoxDatabasePassword.Text = "";
+                    numericUpDown1.Value = 0;
                 }
                 else
                 {
@@ -144,6 +146,7 @@ namespace Hospital
             textBoxDatabaseName.Text = appSettings.Settings["db"].Value;
             textBoxDatabaseUser.Text = appSettings.Settings["uid"].Value;
             textBoxDatabasePassword.Text = appSettings.Settings["password"].Value;
+            numericUpDown1.Value = Convert.ToInt32(appSettings.Settings["timerInactive"].Value);
         }
     }
 }

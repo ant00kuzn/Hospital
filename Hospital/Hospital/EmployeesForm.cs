@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using MySql.Data.MySqlClient;
 using ToolTip = System.Windows.Forms.ToolTip;
+using System.Configuration;
 
 namespace Hospital
 {
@@ -20,6 +21,9 @@ namespace Hospital
         private DataView dt; // Представление данных для фильтрации
         private ContextMenuStrip employeeContextMenu; // Контекстное меню
 
+        private DateTime lastActivity = DateTime.Now;
+        private Timer inactive;
+        private bool fclosed = false;
 
         private int selectedRowIndex = -1;
         private int currentNumPage = 0;
@@ -27,6 +31,49 @@ namespace Hospital
         public EmployeesForm()
         {
             InitializeComponent(); // Инициализация компонентов
+
+            inactive = new Timer();
+            inactive.Interval = 1000;
+            inactive.Tick += Inactive_Tick;
+
+            this.MouseMove += ActivityOccured;
+            this.KeyDown += ActivityOccured;
+            this.MouseClick += ActivityOccured;
+        }
+        private void ActivityOccured(object sender, EventArgs e)
+        {
+            ResetInactivityTimer();
+        }
+
+        private void Inactive_Tick(object sender, EventArgs e)
+        {
+            if(DateTime.Now.Second - lastActivity.Second > Convert.ToInt32(ConfigurationManager.AppSettings["timerInactive"]) - 1)
+            {
+                LockSystem();
+            }
+        }
+
+        private void LockSystem()
+        {
+            if (!fclosed)
+            {
+                fclosed = true;
+                inactive.Stop();
+
+                LoginForm ll = new LoginForm(true);
+                this.Hide();
+                ll.ShowDialog();
+                this.Show();
+
+                fclosed = false;
+                ResetInactivityTimer();
+                inactive.Start();
+            }
+        }
+
+        private void ResetInactivityTimer()
+        {
+            lastActivity = DateTime.Now;
         }
 
         private void InitializeContextMenu()
@@ -477,6 +524,11 @@ namespace Hospital
 
         private void EmployeesForm_Load(object sender, EventArgs e)
         {
+            if (!fclosed)
+            {
+                inactive.Start();
+            }
+
             InitializeContextMenu(); // Настройка контекстного меню
             LoadEmployeeData(); // Загрузка данных при загрузке формы
             LoadRoles(); // Загрузка ролей
@@ -509,6 +561,12 @@ namespace Hospital
         private void button1_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void EmployeesForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            inactive.Stop();
+            inactive.Dispose();
         }
     }
 }

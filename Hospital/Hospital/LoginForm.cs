@@ -24,6 +24,8 @@ namespace Hospital
         public int LoginAttemps = 0;
         public bool capthaIsVisible = false;
         private const string BackupFolderName = "Backups";
+
+        private bool inactive = false;
         // Конструктор формы
         public LoginForm()
         {
@@ -31,6 +33,16 @@ namespace Hospital
             RoundButtonCorners(this.buttonLogin, 10); // Скругление углов кнопки
             textBoxLogin.Text = ""; // Очистка поля логина
             textBoxPassword.Text = ""; // Очистка поля пароля
+        }
+
+        public LoginForm(bool inactive)
+        {
+            InitializeComponent();
+            RoundButtonCorners(this.buttonLogin, 10); // Скругление углов кнопки
+            textBoxLogin.Text = ""; // Очистка поля логина
+            textBoxPassword.Text = ""; // Очистка поля пароля
+
+            this.inactive = inactive;
         }
 
         // Обработчик клика по кнопке входа
@@ -57,17 +69,31 @@ namespace Hospital
 
                     if (res) // Если авторизация успешна
                     {
-                        LoginAttemps = 0;
-                        resetCaptha();
+                        if (!inactive)
+                        {
+                            LoginAttemps = 0;
+                            resetCaptha();
 
-                        // Создание и отображение главной формы
-                        MainForm mainForm = new MainForm(User.Role);
-                        this.Hide(); // Скрытие формы авторизации
-                        mainForm.ShowDialog();
+                            // Создание и отображение главной формы
+                            MainForm mainForm = new MainForm(User.Role);
+                            this.Hide(); // Скрытие формы авторизации
+                            mainForm.ShowDialog();
 
-                        // Очистка полей после выхода из главной формы
-                        textBoxLogin.Text = "";
-                        textBoxPassword.Text = "";
+                            // Очистка полей после выхода из главной формы
+                            textBoxLogin.Text = "";
+                            textBoxPassword.Text = "";
+                        }
+                        else
+                        {
+                            LoginAttemps = 0;
+                            resetCaptha();
+
+                            this.Close();
+
+                            // Очистка полей после выхода из главной формы
+                            textBoxLogin.Text = "";
+                            textBoxPassword.Text = "";
+                        }
                     }
                     else // Если авторизация не удалась
                     {
@@ -100,17 +126,31 @@ namespace Hospital
 
                             if (res)
                             {
-                                LoginAttemps = 0;
-                                resetCaptha();
+                                if (!inactive)
+                                {
+                                    LoginAttemps = 0;
+                                    resetCaptha();
 
-                                // Создание и отображение главной формы
-                                MainForm mainForm = new MainForm(User.Role);
-                                this.Hide(); // Скрытие формы авторизации
-                                mainForm.ShowDialog();
+                                    // Создание и отображение главной формы
+                                    MainForm mainForm = new MainForm(User.Role);
+                                    this.Hide(); // Скрытие формы авторизации
+                                    mainForm.ShowDialog();
 
-                                // Очистка полей после выхода из главной формы
-                                textBoxLogin.Text = "";
-                                textBoxPassword.Text = "";
+                                    // Очистка полей после выхода из главной формы
+                                    textBoxLogin.Text = "";
+                                    textBoxPassword.Text = "";
+                                }
+                                else
+                                {
+                                    LoginAttemps = 0;
+                                    resetCaptha();
+
+                                    this.Close();
+
+                                    // Очистка полей после выхода из главной формы
+                                    textBoxLogin.Text = "";
+                                    textBoxPassword.Text = "";
+                                }
                             }
                             else
                             {
@@ -336,7 +376,7 @@ namespace Hospital
                 }
 
                 // Заполнение данных пользователя
-                User.Role = Convert.ToInt32(tb.Rows[0].ItemArray.GetValue(7).ToString());
+                User.Role = Convert.ToInt32(tb.Rows[0].ItemArray.GetValue(10).ToString());
                 User.SurName = tb.Rows[0].ItemArray.GetValue(1).ToString();
                 User.Name = tb.Rows[0].ItemArray.GetValue(2).ToString();
                 User.Patronymic = tb.Rows[0].ItemArray.GetValue(3).ToString();
@@ -369,12 +409,19 @@ namespace Hospital
         // Обработчик закрытия формы
         private void LoginForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            AutomaticBackup();
-            // Подтверждение выхода из приложения
-            if (DialogResult.Yes == MessageBox.Show("Вы действительно хотите выйти?", "Подтверждение", MessageBoxButtons.YesNo, MessageBoxIcon.Information))
-                e.Cancel = false; // Закрытие формы
+            if (!inactive)
+            {
+                AutomaticBackup();
+                // Подтверждение выхода из приложения
+                if (DialogResult.Yes == MessageBox.Show("Вы действительно хотите выйти?", "Подтверждение", MessageBoxButtons.YesNo, MessageBoxIcon.Information))
+                    e.Cancel = false; // Закрытие формы
+                else
+                    e.Cancel = true; // Отмена закрытия формы
+            }
             else
-                e.Cancel = true; // Отмена закрытия формы
+            {
+                e.Cancel = false;
+            }
         }
 
         private void picatureReloadCaptcha_Click(object sender, EventArgs e)
