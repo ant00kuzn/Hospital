@@ -449,7 +449,7 @@ namespace Hospital
             }
             else
             {
-                inactive = false;
+                this.DialogResult = DialogResult.Cancel;
                 e.Cancel = false;
             }
         }

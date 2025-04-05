@@ -68,7 +68,14 @@ namespace Hospital
 
                 LoginForm ll = new LoginForm(true);
                 this.Hide();
-                ll.ShowDialog();
+                DialogResult result = ll.ShowDialog();
+
+                if (result == DialogResult.Cancel || result == DialogResult.None)
+                {
+                    this.Close();
+                    return;
+                }
+
                 this.Show();
 
                 fclosed = false;
