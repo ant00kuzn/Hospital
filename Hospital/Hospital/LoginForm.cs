@@ -26,6 +26,8 @@ namespace Hospital
         private const string BackupFolderName = "Backups"; //Название папки для автоматического резервного копирования
 
         private bool inactive = false;
+
+        private int prevRole;
         // Конструктор формы
         public LoginForm()
         {
@@ -83,7 +85,7 @@ namespace Hospital
                             textBoxLogin.Text = "";
                             textBoxPassword.Text = "";
                         }
-                        else
+                        else if (inactive && prevRole == User.Role)
                         {
                             LoginAttemps = 0;
                             resetCaptha();
@@ -93,6 +95,17 @@ namespace Hospital
                             // Очистка полей после выхода из главной формы
                             textBoxLogin.Text = "";
                             textBoxPassword.Text = "";
+                        }
+                        else
+                        {
+                            MessageBox.Show("Предыдущий вход был осуществлен из под другой роли пользователя.", "Ошибка входа", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+
+                            textBoxLogin.Text = "";
+                            textBoxPassword.Text = "";
+                            LoginAttemps++;
+                            showCaptha();
+
+                            return;
                         }
                     }
                     else // Если авторизация не удалась
@@ -140,7 +153,7 @@ namespace Hospital
                                     textBoxLogin.Text = "";
                                     textBoxPassword.Text = "";
                                 }
-                                else
+                                else if (inactive && prevRole == User.Role)
                                 {
                                     LoginAttemps = 0;
                                     resetCaptha();
@@ -150,6 +163,17 @@ namespace Hospital
                                     // Очистка полей после выхода из главной формы
                                     textBoxLogin.Text = "";
                                     textBoxPassword.Text = "";
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Предыдущий вход был осуществлен из под другой роли пользователя.", "Ошибка входа", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+
+                                    textBoxLogin.Text = "";
+                                    textBoxPassword.Text = "";
+                                    LoginAttemps++;
+                                    showCaptha();
+
+                                    return;
                                 }
                             }
                             else
@@ -318,7 +342,7 @@ namespace Hospital
         // Ограничение ввода в поле логина (только латинские буквы и подчеркивание)
         private void textBoxLogin_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (!Regex.IsMatch(e.KeyChar.ToString(), @"[a-zA-Z_]"))
+            if (!Regex.IsMatch(e.KeyChar.ToString(), @"[a-zA-Z0-9_]"))
             {
                 e.Handled = true;
             }
@@ -380,6 +404,7 @@ namespace Hospital
                 }
 
                 // Заполнение данных пользователя
+                prevRole = User.Role;
                 User.Role = Convert.ToInt32(tb.Rows[0].ItemArray.GetValue(10).ToString());
                 User.SurName = tb.Rows[0].ItemArray.GetValue(1).ToString();
                 User.Name = tb.Rows[0].ItemArray.GetValue(2).ToString();
@@ -424,6 +449,7 @@ namespace Hospital
             }
             else
             {
+                inactive = false;
                 e.Cancel = false;
             }
         }

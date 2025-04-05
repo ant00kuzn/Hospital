@@ -52,7 +52,7 @@ namespace Hospital
         //Тик таймера с проверкой на истечение таймера
         private void Inactive_Tick(object sender, EventArgs e)
         {
-            if(DateTime.Now.Second - lastActivity.Second > Convert.ToInt32(ConfigurationManager.AppSettings["timerInactive"]) - 1)
+            if((DateTime.Now - lastActivity).TotalSeconds > Convert.ToInt32(ConfigurationManager.AppSettings["timerInactive"]))
             {
                 LockSystem();
             }
@@ -196,21 +196,21 @@ namespace Hospital
 
                 switch (dataGridViewEmployees.Columns[e.ColumnIndex].Name)
                 {
-                    case "EmployeeFIO": //фамилия и. о.
+                    case "EmployeeFIO": //имя отчество ф.
                         e.Value = val.Split(' ')[0];
-                        e.Value += " " + val.Split(' ')[1][0].ToString() + ".";
+                        e.Value += " " + val.Split(' ')[1];
                         e.Value += " " + val.Split(' ')[2][0].ToString() + ".";
                         break;
                     case "Phone": //+7952763****
                         e.Value = val.Substring(0, 8) + "****";
                         break;
-                    case "Login": //ku****
-                        if (val.Length < 3)
+                    case "Login": //kuzn**
+                        if (val.Length < 4)
                         {
                             e.Value = val.Substring(0, 2) + "****";
                             break;
                         }
-                        e.Value = val.Substring(0, 3) + "****";
+                        e.Value = val.Substring(0, 4) + "****";
                         break;
                 }
             }
@@ -218,7 +218,7 @@ namespace Hospital
 
         #region pagination
         //Добавление пагинации
-        void Pagination()
+        private void Pagination()
         {
             dataGridViewEmployees.CurrentCell = null;
             foreach (DataGridViewRow r in dataGridViewEmployees.Rows)
@@ -244,6 +244,8 @@ namespace Hospital
                 ll[i].Name = "page" + i;
                 ll[i].ForeColor = Color.Black;
                 ll[i].AutoSize = true;
+                ll[i].Anchor = AnchorStyles.Bottom;
+                ll[i].Anchor = AnchorStyles.Left;
                 ll[i].Location = new Point(x, y);
                 ll[i].Click += new EventHandler(LinkLabel_Click);
                 this.Controls.Add(ll[i]);
@@ -372,7 +374,7 @@ namespace Hospital
             buttonPreviousPage.Enabled = (currentNumPage > 0);
             buttonNextPage.Enabled = (currentNumPage < totalPages - 1);
         }
-#endregion
+        #endregion
 
         //Загрузка ролей в comboBox
         private void LoadRoles()
