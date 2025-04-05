@@ -41,12 +41,23 @@ namespace Hospital
             this.MouseMove += ActivityOccured;
             this.KeyDown += ActivityOccured;
             this.MouseClick += ActivityOccured;
+            this.MouseWheel += ActivityOccured;
+            this.Move += ActivityOccured;
+            this.MouseCaptureChanged += ActivityOccured;
+            this.LostFocus += LostFocu;
+            this.GotFocus += ActivityOccured;
         }
 
         //метод обработки сброса таймера по действию пользователя
         private void ActivityOccured(object sender, EventArgs e)
         {
             ResetInactivityTimer();
+        }
+
+        private void LostFocu(object sender, EventArgs e)
+        {
+            fclosed = true;
+            inactive.Stop();
         }
 
         //Тик таймера с проверкой на истечение таймера
@@ -68,13 +79,8 @@ namespace Hospital
 
                 LoginForm ll = new LoginForm(true);
                 this.Hide();
-                DialogResult result = ll.ShowDialog();
-
-                if (result == DialogResult.Cancel || result == DialogResult.None)
-                {
-                    this.Close();
-                    return;
-                }
+                
+                ll.ShowDialog();
 
                 this.Show();
 
@@ -171,12 +177,6 @@ namespace Hospital
                         Role.Name = "RoleName";
                         Role.HeaderText = "Роль";
                         dataGridViewEmployees.Columns.Add(Role);
-
-                        DataGridViewTextBoxColumn Login = new DataGridViewTextBoxColumn();
-                        Login.DataPropertyName = "Login";
-                        Login.Name = "Login";
-                        Login.HeaderText = "Логин";
-                        dataGridViewEmployees.Columns.Add(Login);
 
                         dt = bedTable.DefaultView; // Установка представления данных
                         dataGridViewEmployees.DataSource = dt; // Привязка данных
