@@ -33,15 +33,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>icon.ico</ApplicationIcon>
+    <ApplicationIcon>Файлы\icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MySql.Data">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\MySQL\MySQL Connector NET 8.1.0\MySql.Data.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\MySQL\MySQL Connector NET 8.1.0\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.1.2\lib\net462\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -53,29 +56,59 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BedsForm.cs">
+    <Compile Include="WardsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="BedsForm.Designer.cs">
-      <DependentUpon>BedsForm.cs</DependentUpon>
+    <Compile Include="WardsForm.Designer.cs">
+      <DependentUpon>WardsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="CapthaGenerate.cs" />
-    <Compile Include="DatabaseImport.cs">
+    <Compile Include="Справочники\Benefit.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DatabaseImport.Designer.cs">
+    <Compile Include="Справочники\Benefit.Designer.cs">
+      <DependentUpon>Benefit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Справочники\Department.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Справочники\Department.Designer.cs">
+      <DependentUpon>Department.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Справочники\Diagnosis.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Справочники\Diagnosis.Designer.cs">
+      <DependentUpon>Diagnosis.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Справочники\PatientStatus.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Справочники\PatientStatus.Designer.cs">
+      <DependentUpon>PatientStatus.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Файлы\CapthaGenerate.cs" />
+    <Compile Include="Спец. возможности\DatabaseImport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Спец. возможности\DatabaseImport.Designer.cs">
       <DependentUpon>DatabaseImport.cs</DependentUpon>
     </Compile>
-    <Compile Include="EmployeeManagment.cs">
+    <Compile Include="Изменить - удалить\EmployeeManagment.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="EmployeeManagment.Designer.cs">
+    <Compile Include="Изменить - удалить\EmployeeManagment.Designer.cs">
       <DependentUpon>EmployeeManagment.cs</DependentUpon>
     </Compile>
-    <Compile Include="GuidesForm.cs">
+    <Compile Include="HospitalizationIteractionForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GuidesForm.Designer.cs">
+    <Compile Include="HospitalizationIteractionForm.Designer.cs">
+      <DependentUpon>HospitalizationIteractionForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Справочники\GuidesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Справочники\GuidesForm.Designer.cs">
       <DependentUpon>GuidesForm.cs</DependentUpon>
     </Compile>
     <Compile Include="EmployeesForm.cs">
@@ -108,35 +141,59 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Data.cs" />
+    <Compile Include="Файлы\Data.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReportForm.cs">
+    <Compile Include="Изменить - удалить\ReportForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ReportForm.Designer.cs">
+    <Compile Include="Изменить - удалить\ReportForm.Designer.cs">
       <DependentUpon>ReportForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="SettingsForm.cs">
+    <Compile Include="Спец. возможности\SettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SettingsForm.Designer.cs">
+    <Compile Include="Спец. возможности\SettingsForm.Designer.cs">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="TwoDimensonal.cs" />
-    <EmbeddedResource Include="BedsForm.resx">
-      <DependentUpon>BedsForm.cs</DependentUpon>
+    <Compile Include="Файлы\TwoDimensonal.cs" />
+    <Compile Include="UsersForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UsersForm.Designer.cs">
+      <DependentUpon>UsersForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Справочники\Role.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Справочники\Role.Designer.cs">
+      <DependentUpon>Role.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="WardsForm.resx">
+      <DependentUpon>WardsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DatabaseImport.resx">
+    <EmbeddedResource Include="Спец. возможности\DatabaseImport.resx">
       <DependentUpon>DatabaseImport.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="EmployeeManagment.resx">
+    <EmbeddedResource Include="Изменить - удалить\EmployeeManagment.resx">
       <DependentUpon>EmployeeManagment.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="EmployeesForm.resx">
       <DependentUpon>EmployeesForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GuidesForm.resx">
+    <EmbeddedResource Include="HospitalizationIteractionForm.resx">
+      <DependentUpon>HospitalizationIteractionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Справочники\Benefit.resx">
+      <DependentUpon>Benefit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Справочники\Department.resx">
+      <DependentUpon>Department.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Справочники\Diagnosis.resx">
+      <DependentUpon>Diagnosis.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Справочники\GuidesForm.resx">
       <DependentUpon>GuidesForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PatientsForm.resx">
@@ -161,12 +218,22 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="ReportForm.resx">
+    <EmbeddedResource Include="Изменить - удалить\ReportForm.resx">
       <DependentUpon>ReportForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="SettingsForm.resx">
+    <EmbeddedResource Include="Спец. возможности\SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UsersForm.resx">
+      <DependentUpon>UsersForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Справочники\PatientStatus.resx">
+      <DependentUpon>PatientStatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Справочники\Role.resx">
+      <DependentUpon>Role.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -237,10 +304,10 @@
     <None Include="Resources\doctor-linear-icon-vector-28542016.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="hospital_withoutdata.sql">
+    <Content Include="Файлы\hospital_withoutdata.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="icon.ico" />
+    <Content Include="Файлы\icon.ico" />
     <None Include="Resources\reload1.png" />
     <None Include="Resources\reload.png" />
   </ItemGroup>

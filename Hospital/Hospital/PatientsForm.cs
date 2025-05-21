@@ -1,5 +1,4 @@
-﻿// Импорт необходимых пространств имен
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
 using System;
 using System.Data;
 using System.Drawing;
@@ -8,76 +7,20 @@ using System.Windows.Forms;
 
 namespace Hospital
 {
-    // Класс формы для работы с пациентами
     public partial class PatientsForm : Form
     {
-        // Поля для хранения данных о пациентах
         private DataTable patientTable;
         private int selectedRowIndex = -1;
         private bool isAdding = false;
+        private bool isRowSelected = false;
 
-        // Конструктор формы
         public PatientsForm()
         {
             InitializeComponent();
-            LoadPatientData(); // Загрузка данных о пациентах
-            if (User.Role == 4)
-            {
-                ContextMenuSetup(); // Настройка контекстного меню
-            }
+            LoadPatientData();
+            UpdateRowCount();
         }
 
-        // Настройка контекстного меню для DataGridView
-        private void ContextMenuSetup()
-        {
-            ContextMenuStrip contextMenu = new ContextMenuStrip();
-            ToolStripMenuItem addMenuItem = new ToolStripMenuItem("Добавить");
-            ToolStripMenuItem editMenuItem = new ToolStripMenuItem("Редактировать");
-
-            contextMenu.Items.Add(addMenuItem);
-            contextMenu.Items.Add(editMenuItem);
-
-            addMenuItem.Click += AddMenuItem_Click;
-            editMenuItem.Click += EditMenuItem_Click;
-
-            dataGridViewPatients.ContextMenuStrip = contextMenu;
-
-        }
-
-        // Обработчик клика по пункту "Добавить" в контекстном меню
-        private void AddMenuItem_Click(object sender, EventArgs e)
-        {
-            isAdding = true;
-            this.Size = new Size(1006, 787); // Изменение размера формы
-            selectedRowIndex = -1;
-            ClearInputFields(); // Очистка полей ввода
-            EnableInputFields(true); // Активация полей ввода
-
-            button2.Text = "Добавить";
-        }
-
-        // Обработчик клика по пункту "Редактировать" в контекстном меню
-        private void EditMenuItem_Click(object sender, EventArgs e)
-        {
-            isAdding = false;
-            if (dataGridViewPatients.SelectedRows.Count > 0)
-            {
-                selectedRowIndex = dataGridViewPatients.SelectedRows[0].Index;
-                LoadSelectedRowData(); // Загрузка данных выбранной строки
-                EnableInputFields(true); // Активация полей ввода
-
-                button2.Text = "Редактировать";
-
-                this.Size = new Size(1006, 787); // Изменение размера формы
-            }
-            else
-            {
-                MessageBox.Show("Выберите строку для редактирования.", "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-        }
-
-        // Загрузка данных о пациентах из БД
         private void LoadPatientData()
         {
             try
@@ -86,9 +29,12 @@ namespace Hospital
                 {
                     connection.Open();
 
-                    // SQL-запрос для получения данных о пациентах
-                    using (MySqlCommand command = new MySqlCommand("SELECT PatientID, PatientSurname, PatientName, PatientPatronymic, Birthday, Address," +
-                        "PhoneNumber, Insurance_Policy FROM patient order by PatientSurname ASC", connection))
+                    using (MySqlCommand command = new MySqlCommand("SELECT patientSnils, patientFIO, g.genderID, g.genderName, " +
+                        "patientAddress, TIMESTAMPDIFF(YEAR, patientBirthday, CURDATE()) AS patientAge, patientPhoneNumber, diagnosisID, s.statusID, s.statusName " +
+                        "from patient p " +
+                        "inner join gender g on p.genderID = g.genderID " +
+                        "inner join patientstatus s on p.statusID = s.statusID " +
+                        "order by patientFIO asc", connection))
                     {
                         MySqlDataAdapter adapter = new MySqlDataAdapter(command);
                         patientTable = new DataTable();
@@ -97,46 +43,31 @@ namespace Hospital
                         dataGridViewPatients.AutoGenerateColumns = false;
                         dataGridViewPatients.Columns.Clear();
 
-                        // Добавление колонок в DataGridView
-                        AddDataGridViewColumn("PatientID", "ID", "PatientID");
-                        AddDataGridViewColumn("PatientSurname", "Фамилия", "PatientSurname");
-                        AddDataGridViewColumn("PatientName", "Имя", "PatientName");
-                        AddDataGridViewColumn("PatientPatronymic", "Отчество", "PatientPatronymic");
-                        AddDataGridViewColumn("Birthday", "Дата рождения", "Birthday");
-                        AddDataGridViewColumn("Address", "Адрес", "Address");
-                        AddDataGridViewColumn("PhoneNumber", "Номер телефона", "PhoneNumber");
-                        AddDataGridViewColumn("Insurance_Policy", "Страховой полис", "Insurance_Policy");
-                        if (User.Role == 4)
-                        {
-                            AddDeleteButtonColumn(); // Добавляем колонку с кнопкой "Удалить"
-                        }
+                        AddDataGridViewColumn("patientSnils", "СНИЛС", "patientSnils");
+                        AddDataGridViewColumn("patientFIO", "ФИО", "patientFIO");
+                        AddDataGridViewColumn("genderID", "genderID", "genderID");
+                        AddDataGridViewColumn("genderName", "Пол", "genderName");
+                        AddDataGridViewColumn("patientAddress", "Адрес", "patientAddress");
+                        AddDataGridViewColumn("patientAge", "Возраст", "patientAge");
+                        AddDataGridViewColumn("patientPhoneNumber", "Номер телефона", "patientPhoneNumber");
+                        AddDataGridViewColumn("diagnosisID", "Код диагноза", "diagnosisID");
+                        AddDataGridViewColumn("statusID", "statusID", "statusID");
+                        AddDataGridViewColumn("statusName", "Текущий статус", "statusName");
 
                         dataGridViewPatients.DataSource = patientTable;
-
-                        dataGridViewPatients.Columns[0].Visible = false; // Скрытие колонки с ID
+                        dataGridViewPatients.Columns[2].Visible = false;
+                        dataGridViewPatients.Columns[8].Visible = false;
                         dataGridViewPatients.Refresh();
+                        UpdateRowCount();
                     }
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Ошибка при загрузке данных: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
             }
         }
 
-        // Добавление колонки с кнопкой "Удалить"
-        private void AddDeleteButtonColumn()
-        {
-            DataGridViewButtonColumn deleteButtonColumn = new DataGridViewButtonColumn();
-            deleteButtonColumn.Name = "DeleteColumn";
-            deleteButtonColumn.Text = "Удалить";
-            deleteButtonColumn.HeaderText = "Удаление";
-            deleteButtonColumn.UseColumnTextForButtonValue = true;
-            dataGridViewPatients.Columns.Add(deleteButtonColumn);
-        }
-
-        // Метод для добавления колонки в DataGridView
         private void AddDataGridViewColumn(string name, string headerText, string dataPropertyName)
         {
             DataGridViewTextBoxColumn column = new DataGridViewTextBoxColumn();
@@ -146,117 +77,89 @@ namespace Hospital
             dataGridViewPatients.Columns.Add(column);
         }
 
-        // Очистка полей ввода
         private void ClearInputFields()
         {
-            textBoxSurName.Clear();
-            textBoxName.Clear();
-            textBoxPatro.Clear();
-            dateTimePickerDateOfBirth.Value = DateTime.Now.Date;
-            textBoxAddress.Clear();
-            maskedTextBoxPhoneNumber.Clear();
-            textBoxPolicy.Clear();
+            snils.Clear();
+            passport.Clear();
+            policy.Clear();
+            surname.Clear();
+            name.Clear();
+            patronymic.Clear();
+            data.Value = DateTime.Now.Date;
+            comboBoxGender.SelectedIndex = -1;
+            address.Clear();
+            phone.Clear();
+            comboBoxBenefit.SelectedIndex = -1;
+            diagnos.Clear();
+            FIOrod.Clear();
+            phoneRod.Clear();
+            rab.Clear();
         }
 
-        // Загрузка данных из выбранной строки в поля формы
-        private void LoadSelectedRowData()
-        {
-            if (selectedRowIndex >= 0)
-            {
-                DataRow selectedRow = patientTable.Rows[selectedRowIndex];
-
-                textBoxSurName.Text = selectedRow["PatientSurname"].ToString();
-                textBoxName.Text = selectedRow["PatientName"].ToString();
-                textBoxPatro.Text = selectedRow["PatientPatronymic"].ToString();
-                if (selectedRow["Birthday"] != DBNull.Value)
-                {
-                    dateTimePickerDateOfBirth.Value = Convert.ToDateTime(selectedRow["Birthday"]);
-                }
-                textBoxAddress.Text = selectedRow["Address"].ToString();
-                maskedTextBoxPhoneNumber.Text = selectedRow["PhoneNumber"].ToString();
-                textBoxPolicy.Text = selectedRow["Insurance_Policy"].ToString(); // Заполняем поле для страхового полиса
-            }
-        }
-
-        // Включение/выключение полей ввода
         private void EnableInputFields(bool enable)
         {
-            textBoxSurName.Enabled = enable;
-            textBoxName.Enabled = enable;
-            textBoxPatro.Enabled = enable;
-            dateTimePickerDateOfBirth.Enabled = enable;
-            textBoxAddress.Enabled = enable;
-            maskedTextBoxPhoneNumber.Enabled = enable;
-            textBoxPolicy.Enabled = enable;
-            button2.Enabled = enable;
-            button1.Enabled = enable;
+            snils.Enabled = enable;
+            passport.Enabled = enable;
+            policy.Enabled = enable;
+            surname.Enabled = enable;
+            name.Enabled = enable;
+            patronymic.Enabled = enable;
+            data.Enabled = enable;
+            comboBoxGender.Enabled = enable;
+            address.Enabled = enable;
+            phone.Enabled = enable;
+            comboBoxBenefit.Enabled = enable;
+            diagnos.Enabled = enable;
+            FIOrod.Enabled = enable;
+            phoneRod.Enabled = enable;
+            rab.Enabled = enable;
         }
 
-        // Обработчик нажатия кнопки "Сохранить"
         private void button2_Click(object sender, EventArgs e)
         {
             if (isAdding)
             {
-                AddPatient(); // Добавление нового пациента
+                AddPatient();
             }
             else
             {
-                UpdatePatient(); // Обновление данных пациента
+                UpdatePatient();
             }
         }
 
-        // Обработчик нажатия кнопки "Отмена"
-        private void button1_Click(object sender, EventArgs e)
-        {
-            EnableInputFields(false); // Деактивация полей ввода
-            ClearInputFields(); // Очистка полей ввода
-        }
-
-        // Добавление нового пациента
         private void AddPatient()
         {
-            if (!ValidateInput()) return; // Проверка введенных данных
+            if (!ValidateInput()) return;
 
             using (MySqlConnection connection = new MySqlConnection(GlobalValue.GetConnString()))
             {
                 connection.Open();
-                string query = @"INSERT INTO Patient (PatientSurname, PatientName, PatientPatronymic, Birthday, Address, PhoneNumber, Insurance_Policy) 
-                                VALUES (@PatientSurname, @PatientName, @PatientPatronymic, @Birthday, @Address, @PhoneNumber, @Insurance_Policy)";
 
-                // Проверка на уникальность страхового полиса
-                string checkQuery = "SELECT COUNT(*) FROM Patient WHERE Insurance_Policy = @Insurance_Policy";
-                using (MySqlCommand checkCommand = new MySqlCommand(checkQuery, connection))
+                // Проверка на дубликаты
+                if (CheckForDuplicates(connection))
                 {
-                    checkCommand.Parameters.AddWithValue("@Insurance_Policy", textBoxPolicy.Text);
-                    int count = Convert.ToInt32(checkCommand.ExecuteScalar());
-
-                    if (count > 0)
-                    {
-                        MessageBox.Show("Пациент с таким страховым полисом уже существует.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return; // Прерываем добавление, если пациент с таким полисом уже есть
-                    }
+                    return;
                 }
+
+                string query = @"INSERT INTO Patient (patientSnils, passportNumber, policyNumber, patientSurname, patientName, patientPatronymic, 
+                                patientBirthday, genderID, patientAddress, patientPhoneNumber, statusID, diagnosisID, 
+                                relativeFIO, relativePhone, workplace, benefitID) 
+                                VALUES (@Snils, @Passport, @Policy, @Surname, @Name, @Patronymic, @Birthday, @Gender, 
+                                @Address, @Phone, 1, @Diagnosis, @RelativeFIO, @RelativePhone, @Workplace, @Benefit)";
 
                 using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
-                    // Добавление параметров для SQL-запроса
-                    command.Parameters.AddWithValue("@PatientSurname", textBoxSurName.Text);
-                    command.Parameters.AddWithValue("@PatientName", textBoxName.Text);
-                    command.Parameters.AddWithValue("@PatientPatronymic", textBoxPatro.Text);
-                    command.Parameters.AddWithValue("@Birthday", dateTimePickerDateOfBirth.Value.ToString("yyyy-MM-dd"));
-                    command.Parameters.AddWithValue("@Address", textBoxAddress.Text);
-                    command.Parameters.AddWithValue("@PhoneNumber", maskedTextBoxPhoneNumber.Text);
-                    command.Parameters.AddWithValue("@Insurance_Policy", textBoxPolicy.Text); // Добавляем параметр для страхового полиса
+                    SetCommandParameters(command);
 
                     try
                     {
                         command.ExecuteNonQuery();
                         MessageBox.Show("Пациент успешно добавлен.", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        LoadPatientData(); // Обновление данных
+                        LoadPatientData();
                         ClearInputFields();
                         EnableInputFields(false);
-                        this.Size = new Size(1006, 520); // Возвращение формы к исходному размеру
-
+                        isAdding = false;
+                        UpdateButtonStates();
                     }
                     catch (Exception ex)
                     {
@@ -266,37 +169,128 @@ namespace Hospital
             }
         }
 
-        // Обновление данных о пациенте
+        private bool CheckForDuplicates(MySqlConnection connection)
+        {
+            // Проверка СНИЛС
+            string checkSnilsQuery = "SELECT COUNT(*) FROM Patient WHERE patientSnils = @Snils";
+            using (MySqlCommand checkCommand = new MySqlCommand(checkSnilsQuery, connection))
+            {
+                checkCommand.Parameters.AddWithValue("@Snils", snils.Text);
+                if (Convert.ToInt32(checkCommand.ExecuteScalar()) > 0)
+                {
+                    MessageBox.Show("Пациент с таким СНИЛС уже существует.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return true;
+                }
+            }
+
+            // Проверка паспорта
+            string checkPassportQuery = "SELECT COUNT(*) FROM Patient WHERE passportNumber = @Passport";
+            using (MySqlCommand checkCommand = new MySqlCommand(checkPassportQuery, connection))
+            {
+                checkCommand.Parameters.AddWithValue("@Passport", passport.Text);
+                if (Convert.ToInt32(checkCommand.ExecuteScalar()) > 0)
+                {
+                    MessageBox.Show("Пациент с таким паспортом уже существует.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return true;
+                }
+            }
+
+            // Проверка полиса
+            string checkPolicyQuery = "SELECT COUNT(*) FROM Patient WHERE policyNumber = @Policy";
+            using (MySqlCommand checkCommand = new MySqlCommand(checkPolicyQuery, connection))
+            {
+                checkCommand.Parameters.AddWithValue("@Policy", policy.Text);
+                if (Convert.ToInt32(checkCommand.ExecuteScalar()) > 0)
+                {
+                    MessageBox.Show("Пациент с таким полисом уже существует.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         private void UpdatePatient()
         {
-            if (!ValidateInput()) return; // Проверка введенных данных
+            if (!ValidateInput() || selectedRowIndex < 0) return;
 
             using (MySqlConnection connection = new MySqlConnection(GlobalValue.GetConnString()))
             {
                 connection.Open();
-                // SQL-запрос для обновления данных
-                string query = @"UPDATE Patient SET PatientSurname = @PatientSurname, PatientName = @PatientName, PatientPatronymic = @PatientPatronymic,
-                                 Birthday = @Birthday, Address = @Address, PhoneNumber = @PhoneNumber, Insurance_Policy = @Insurance_Policy
-                                 WHERE PatientID = @PatientID";
+
+                string currentSnils = dataGridViewPatients.Rows[selectedRowIndex].Cells["patientSnils"].Value.ToString();
+                string currentPassport = passport.Text;
+                string currentPolicy = policy.Text;
+
+                // Проверка на дубликаты (исключая текущую запись)
+                string checkSnilsQuery = "SELECT COUNT(*) FROM Patient WHERE patientSnils = @Snils AND patientSnils != @CurrentSnils";
+                using (MySqlCommand checkCommand = new MySqlCommand(checkSnilsQuery, connection))
+                {
+                    checkCommand.Parameters.AddWithValue("@Snils", snils.Text);
+                    checkCommand.Parameters.AddWithValue("@CurrentSnils", currentSnils);
+                    if (Convert.ToInt32(checkCommand.ExecuteScalar()) > 0)
+                    {
+                        MessageBox.Show("Пациент с таким СНИЛС уже существует.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                }
+
+                string checkPassportQuery = "SELECT COUNT(*) FROM Patient WHERE passportNumber = @Passport AND patientSnils != @CurrentSnils";
+                using (MySqlCommand checkCommand = new MySqlCommand(checkPassportQuery, connection))
+                {
+                    checkCommand.Parameters.AddWithValue("@Passport", passport.Text);
+                    checkCommand.Parameters.AddWithValue("@CurrentSnils", currentSnils);
+                    if (Convert.ToInt32(checkCommand.ExecuteScalar()) > 0)
+                    {
+                        MessageBox.Show("Пациент с таким паспортом уже существует.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                }
+
+                string checkPolicyQuery = "SELECT COUNT(*) FROM Patient WHERE policyNumber = @Policy AND patientSnils != @CurrentSnils";
+                using (MySqlCommand checkCommand = new MySqlCommand(checkPolicyQuery, connection))
+                {
+                    checkCommand.Parameters.AddWithValue("@Policy", policy.Text);
+                    checkCommand.Parameters.AddWithValue("@CurrentSnils", currentSnils);
+                    if (Convert.ToInt32(checkCommand.ExecuteScalar()) > 0)
+                    {
+                        MessageBox.Show("Пациент с таким полисом уже существует.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                }
+
+                string query = @"UPDATE Patient SET 
+                                patientSnils = @Snils, 
+                                passportNumber = @Passport, 
+                                policyNumber = @Policy, 
+                                patientSurname = @Surname, 
+                                patientName = @Name, 
+                                patientPatronymic = @Patronymic,
+                                patientBirthday = @Birthday, 
+                                genderID = @Gender, 
+                                patientAddress = @Address, 
+                                patientPhoneNumber = @Phone,
+                                diagnosisID = @Diagnosis, 
+                                relativeFIO = @RelativeFIO, 
+                                relativePhone = @RelativePhone, 
+                                workplace = @Workplace, 
+                                benefitID = @Benefit
+                                WHERE patientSnils = @CurrentSnils";
+
                 using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
-                    // Добавление параметров для SQL-запроса
-                    command.Parameters.AddWithValue("@PatientSurname", textBoxSurName.Text);
-                    command.Parameters.AddWithValue("@PatientName", textBoxName.Text);
-                    command.Parameters.AddWithValue("@PatientPatronymic", textBoxPatro.Text);
-                    command.Parameters.AddWithValue("@Birthday", dateTimePickerDateOfBirth.Value.ToString("yyyy-MM-dd"));
-                    command.Parameters.AddWithValue("@Address", textBoxAddress.Text);
-                    command.Parameters.AddWithValue("@PhoneNumber", maskedTextBoxPhoneNumber.Text);
-                    command.Parameters.AddWithValue("@Insurance_Policy", textBoxPolicy.Text);
-                    command.Parameters.AddWithValue("@PatientID", patientTable.Rows[selectedRowIndex]["PatientID"]);
+                    SetCommandParameters(command);
+                    command.Parameters.AddWithValue("@CurrentSnils", currentSnils);
 
                     try
                     {
                         command.ExecuteNonQuery();
                         MessageBox.Show("Данные пациента успешно обновлены.", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        LoadPatientData(); // Обновление данных
+                        LoadPatientData();
+                        ClearInputFields();
                         EnableInputFields(false);
-                        this.Size = new Size(1006, 520); // Возвращение формы к исходному размеру
+                        isRowSelected = false;
+                        UpdateButtonStates();
                     }
                     catch (Exception ex)
                     {
@@ -306,156 +300,132 @@ namespace Hospital
             }
         }
 
-        // Удаление пациента
-        private void DeletePatient()
+        private void SetCommandParameters(MySqlCommand command)
         {
-            if (DialogResult.No == MessageBox.Show("Вы действительно хотите удалить выбранную запись?", "Подтверждение", MessageBoxButtons.YesNo, MessageBoxIcon.Information))
-            {
-                return;
-            }
-            int patientId = Convert.ToInt32(dataGridViewPatients.Rows[selectedRowIndex].Cells["PatientID"].Value);
-            using (MySqlConnection connection = new MySqlConnection(GlobalValue.GetConnString()))
-            {
-                connection.Open();
-                string query = "DELETE FROM Patient WHERE PatientID = @PatientID";
-                using (MySqlCommand command = new MySqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@PatientID", patientId);
-                    try
-                    {
-                        command.ExecuteNonQuery();
-                        MessageBox.Show("Пациент успешно удален.", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        LoadPatientData(); // Обновление данных
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Ошибка при удалении пациента: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-            }
+            command.Parameters.AddWithValue("@Snils", snils.Text);
+            command.Parameters.AddWithValue("@Passport", passport.Text);
+            command.Parameters.AddWithValue("@Policy", policy.Text);
+            command.Parameters.AddWithValue("@Surname", surname.Text);
+            command.Parameters.AddWithValue("@Name", name.Text);
+            command.Parameters.AddWithValue("@Patronymic", patronymic.Text);
+            command.Parameters.AddWithValue("@Birthday", data.Value.ToString("yyyy-MM-dd"));
+            command.Parameters.AddWithValue("@Gender", comboBoxGender.SelectedValue ?? (object)DBNull.Value);
+            command.Parameters.AddWithValue("@Address", address.Text);
+            command.Parameters.AddWithValue("@Phone", phone.Text.Replace(" ", "").Replace("-", ""));
+            command.Parameters.AddWithValue("@Diagnosis", string.IsNullOrEmpty(diagnos.Text) ? (object)DBNull.Value : diagnos.Text);
+            command.Parameters.AddWithValue("@RelativeFIO", string.IsNullOrEmpty(FIOrod.Text) ? (object)DBNull.Value : FIOrod.Text);
+            command.Parameters.AddWithValue("@RelativePhone", string.IsNullOrEmpty(phoneRod.Text) ? (object)DBNull.Value : phoneRod.Text.Replace(" ", "").Replace("-", ""));
+            command.Parameters.AddWithValue("@Workplace", string.IsNullOrEmpty(rab.Text) ? (object)DBNull.Value : rab.Text);
+            command.Parameters.AddWithValue("@Benefit", comboBoxBenefit.SelectedValue ?? (object)DBNull.Value);
         }
 
-        // Валидация введенных данных
         private bool ValidateInput()
         {
-            if (!DateIsValid(dateTimePickerDateOfBirth))
+            // Проверка СНИЛС (11 цифр)
+            if (!Regex.IsMatch(snils.Text, @"^\d{11}$"))
             {
-                return false;
-            }
-            if (string.IsNullOrWhiteSpace(textBoxSurName.Text))
-            {
-                MessageBox.Show("Пожалуйста, введите фамилию.", "Ошибка ввода", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                textBoxSurName.Focus();
-                return false;
-            }
-            if (string.IsNullOrWhiteSpace(textBoxName.Text))
-            {
-                MessageBox.Show("Пожалуйста, введите имя.", "Ошибка ввода", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                textBoxName.Focus();
-                return false;
-            }
-            if (string.IsNullOrWhiteSpace(textBoxPatro.Text))
-            {
-                MessageBox.Show("Пожалуйста, введите отчество.", "Ошибка ввода", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                textBoxPatro.Focus();
-                return false;
-            }
-            if (string.IsNullOrWhiteSpace(textBoxAddress.Text))
-            {
-                MessageBox.Show("Пожалуйста, введите адрес.", "Ошибка ввода", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                textBoxAddress.Focus();
-                return false;
-            }
-            if (!maskedTextBoxPhoneNumber.MaskCompleted)
-            {
-                MessageBox.Show("Пожалуйста, введите корректный номер телефона.", "Ошибка ввода", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                maskedTextBoxPhoneNumber.Focus();
+                MessageBox.Show("СНИЛС должен содержать 11 цифр.", "Ошибка ввода", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                snils.Focus();
                 return false;
             }
 
-            return true;
-        }
+            // Проверка паспорта (4 цифры, пробел, 6 цифр)
+            if (!Regex.IsMatch(passport.Text, @"^\d{4}\s\d{6}$"))
+            {
+                MessageBox.Show("Паспорт должен быть в формате: 1234 567890", "Ошибка ввода", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                passport.Focus();
+                return false;
+            }
 
-        // Валидация даты рождения
-        private bool DateIsValid(DateTimePicker dt)
-        {
-            if (dt.Value > DateTime.Now.Date)
+            // Проверка полиса (11 цифр)
+            if (!Regex.IsMatch(policy.Text, @"^\d{11}$"))
+            {
+                MessageBox.Show("Полис должен содержать 11 цифр.", "Ошибка ввода", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                policy.Focus();
+                return false;
+            }
+
+            // Проверка фамилии (русские буквы, начинается с заглавной, допускается до 3 дефисов)
+            if (!Regex.IsMatch(surname.Text, @"^[А-ЯЁ][а-яё]*(?:-[А-ЯЁ][а-яё]*){0,3}$"))
+            {
+                MessageBox.Show("Фамилия должна начинаться с заглавной русской буквы и может содержать дефисы (максимум 3).", "Ошибка ввода", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                surname.Focus();
+                return false;
+            }
+
+            // Проверка имени (русские буквы, начинается с заглавной)
+            if (!Regex.IsMatch(name.Text, @"^[А-ЯЁ][а-яё]*$"))
+            {
+                MessageBox.Show("Имя должно начинаться с заглавной русской буквы.", "Ошибка ввода", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                name.Focus();
+                return false;
+            }
+
+            // Проверка отчества (русские буквы, начинается с заглавной)
+            if (!Regex.IsMatch(patronymic.Text, @"^[А-ЯЁ][а-яё]*(?:-[А-ЯЁ][а-яё]*)?$"))
+            {
+                MessageBox.Show("Отчество должно начинаться с заглавной русской буквы.", "Ошибка ввода", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                patronymic.Focus();
+                return false;
+            }
+
+            // Проверка даты рождения
+            if (data.Value > DateTime.Now.Date)
             {
                 MessageBox.Show("Дата рождения не может быть в будущем.", "Ошибка ввода", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                dt.Focus();
+                data.Focus();
                 return false;
             }
 
-            DateTime minBirthdate = DateTime.Now.AddYears(-120);
-            if (dt.Value < minBirthdate)
+            if (data.Value < DateTime.Now.AddYears(-120))
             {
                 MessageBox.Show("Возраст должен быть до 120 лет.", "Ошибка ввода", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                dt.Focus();
+                data.Focus();
+                return false;
+            }
+
+            // Проверка пола
+            if (comboBoxGender.SelectedIndex == -1)
+            {
+                MessageBox.Show("Выберите пол.", "Ошибка ввода", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                comboBoxGender.Focus();
+                return false;
+            }
+
+            // Проверка адреса
+            if (string.IsNullOrWhiteSpace(address.Text))
+            {
+                MessageBox.Show("Введите адрес.", "Ошибка ввода", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                address.Focus();
+                return false;
+            }
+
+            // Проверка телефона
+            if (!phone.MaskCompleted)
+            {
+                MessageBox.Show("Введите корректный номер телефона.", "Ошибка ввода", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                phone.Focus();
                 return false;
             }
 
             return true;
         }
 
-        // Обработчик изменения текста в поле поиска
-        private void richTextBox1_TextChanged(object sender, EventArgs e)
-        {
-            string filterText = richTextBox1.Text.Trim();
-
-            if (string.IsNullOrEmpty(filterText))
-            {
-                LoadPatientData(); // Перезагрузка данных при очистке поля
-            }
-            else
-            {
-                // Фильтрация данных по фамилии
-                DataView dv = patientTable.DefaultView;
-                dv.RowFilter = $"PatientSurname LIKE '%{filterText}%'";
-                dataGridViewPatients.DataSource = dv;
-            }
-        }
-
-        // Обработчик закрытия формы
         private void PatientsForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            // Показываем главную форму при закрытии
-            if (Application.OpenForms["MainForm"] is MainForm mn)
-                mn.Show();
+            if (HospitalizationIteractionForm.isSwitch)
+            {
+                HospitalizationIteractionForm.isSwitch = false;
+                if (Application.OpenForms["HospitalizationIteractionForm"] is HospitalizationIteractionForm mm)
+                    mm.Show();
+            }
             else
-                new MainForm().Show();
-        }
-
-        // Обработчики KeyPress для ограничения ввода
-
-        // Ограничение ввода в поле поиска (только русские буквы, пробелы и дефисы)
-        private void richTextBox1_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (e.KeyChar == (char)Keys.Back)
             {
-                e.Handled = false;
-                return;
-            }
-            if (!Regex.IsMatch(e.KeyChar.ToString(), @"[А-Яа-яЁё\s-]+$"))
-            {
-                e.Handled = true;
+                if (Application.OpenForms["MainForm"] is MainForm mn)
+                    mn.Show();
             }
         }
 
-        // Ограничение ввода в поле имени (только русские буквы и пробелы)
-        private void textBoxName_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (e.KeyChar == (char)Keys.Back)
-            {
-                e.Handled = false;
-                return;
-            }
-            if (!Regex.IsMatch(e.KeyChar.ToString(), @"^[А-Яа-яЁё\s]+$"))
-            {
-                e.Handled = true;
-            }
-        }
-
-        // Ограничение ввода в поле фамилии (только русские буквы, пробелы и дефисы)
         private void textBoxSurName_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)Keys.Back)
@@ -463,74 +433,349 @@ namespace Hospital
                 e.Handled = false;
                 return;
             }
-            if (!Regex.IsMatch(e.KeyChar.ToString(), @"^[А-Яа-яЁё\s-]+$"))
+
+            // Русские буквы и дефис
+            if (!Regex.IsMatch(e.KeyChar.ToString(), @"^[А-Яа-яЁё-]+$"))
             {
                 e.Handled = true;
             }
+
+            // Автоматическое преобразование первой буквы в заглавную
+            if (surname.Text.Length == 0 && char.IsLetter(e.KeyChar))
+            {
+                e.KeyChar = char.ToUpper(e.KeyChar);
+            }
         }
 
-        // Ограничение ввода в поле отчества (только русские буквы, пробелы и дефисы)
-        private void textBoxPatro_KeyPress(object sender, KeyPressEventArgs e)
+        private void textBoxName_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)Keys.Back)
             {
                 e.Handled = false;
                 return;
             }
-            if (!Regex.IsMatch(e.KeyChar.ToString(), @"^[А-Яа-яЁё\s-]+$"))
+
+            // Только русские буквы
+            if (!Regex.IsMatch(e.KeyChar.ToString(), @"^[А-Яа-яЁё]+$"))
+            {
+                e.Handled = true;
+            }
+
+            // Автоматическое преобразование первой буквы в заглавную
+            if (name.Text.Length == 0 && char.IsLetter(e.KeyChar))
+            {
+                e.KeyChar = char.ToUpper(e.KeyChar);
+            }
+        }
+
+        private void textBoxPatronymic_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Back)
+            {
+                e.Handled = false;
+                return;
+            }
+
+            // Русские буквы и дефис
+            if (!Regex.IsMatch(e.KeyChar.ToString(), @"^[А-Яа-яЁё-]+$"))
+            {
+                e.Handled = true;
+            }
+
+            // Автоматическое преобразование первой буквы в заглавную
+            if (patronymic.Text.Length == 0 && char.IsLetter(e.KeyChar))
+            {
+                e.KeyChar = char.ToUpper(e.KeyChar);
+            }
+        }
+
+        private void textBoxPassport_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Back)
+            {
+                e.Handled = false;
+                return;
+            }
+
+            // Только цифры
+            if (!char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+                return;
+            }
+
+            // Автоматическая вставка пробела после 4 цифр
+            if (passport.Text.Length == 4 && !passport.Text.Contains(" "))
+            {
+                passport.Text += " ";
+                passport.SelectionStart = passport.Text.Length;
+            }
+        }
+
+        private void textBoxSnils_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Back)
+            {
+                e.Handled = false;
+                return;
+            }
+
+            // Только цифры
+            if (!char.IsDigit(e.KeyChar))
             {
                 e.Handled = true;
             }
         }
 
-        // Ограничение ввода в поле адреса (только русские буквы, цифры, пробелы и дефисы)
-        private void textBoxAddress_KeyPress(object sender, KeyPressEventArgs e)
+        private void textBoxPolicy_KeyPress(object sender, KeyPressEventArgs e)
         {
-            //kladr
+            if (e.KeyChar == (char)Keys.Back)
+            {
+                e.Handled = false;
+                return;
+            }
+
+            // Только цифры
+            if (!char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+            }
         }
 
-        // Обработчик клика по ячейке DataGridView
+        private void textBoxDiagnos_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Back)
+            {
+                e.Handled = false;
+                return;
+            }
+
+            // Только цифры
+            if (!char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void maskedTextBoxPhoneNumber_Leave(object sender, EventArgs e)
+        {
+            string phoneNumberText = phone.Text.Replace("(", "").Replace(")", "").Replace("-", "").Replace(" ", "");
+            if (!Regex.IsMatch(phoneNumberText, @"^\+7\d{10}$"))
+            {
+                MessageBox.Show("Неверный формат номера телефона. Пример: +7 (9XX) XXX-XX-XX", "Ошибка ввода", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                phone.Focus();
+            }
+        }
+
+        private void maskedTextBoxPhoneRod_Leave(object sender, EventArgs e)
+        {
+            string phoneNumberText = phoneRod.Text.Replace("(", "").Replace(")", "").Replace("-", "").Replace(" ", "");
+            if (!string.IsNullOrEmpty(phoneNumberText) && !Regex.IsMatch(phoneNumberText, @"^\+7\d{10}$"))
+            {
+                MessageBox.Show("Неверный формат номера телефона. Пример: +7 (9XX) XXX-XX-XX", "Ошибка ввода", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                phoneRod.Focus();
+            }
+        }
+
+        private void textBoxPolicy_Leave(object sender, EventArgs e)
+        {
+            if (!Regex.IsMatch(policy.Text, @"^\d{11}$"))
+            {
+                MessageBox.Show("Полис должен содержать 11 цифр.", "Ошибка ввода", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                policy.Focus();
+            }
+        }
+
+        private void textBoxPassport_Leave(object sender, EventArgs e)
+        {
+            if (!Regex.IsMatch(passport.Text, @"^\d{4}\s\d{6}$"))
+            {
+                MessageBox.Show("Паспорт должен быть в формате: 1234 567890", "Ошибка ввода", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                passport.Focus();
+            }
+        }
+
+        private void textBoxSnils_Leave(object sender, EventArgs e)
+        {
+            if (!Regex.IsMatch(snils.Text, @"^\d{11}$"))
+            {
+                MessageBox.Show("СНИЛС должен содержать 11 цифр.", "Ошибка ввода", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                snils.Focus();
+            }
+        }
+
         private void dataGridViewPatients_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
             {
-                dataGridViewPatients.Rows[e.RowIndex].Selected = true;
-                selectedRowIndex = e.RowIndex;
-
-                // Если нажата кнопка "Удалить"
-                if (e.ColumnIndex == 8)
+                if (isRowSelected && selectedRowIndex == e.RowIndex)
                 {
-                    DeletePatient(); // Удаление пациента
+                    // Повторное нажатие на ту же строку - снимаем выделение
+                    dataGridViewPatients.ClearSelection();
+                    ClearInputFields();
+                    isRowSelected = false;
+                    selectedRowIndex = -1;
+                }
+                else
+                {
+                    // Выбираем новую строку
+                    dataGridViewPatients.Rows[e.RowIndex].Selected = true;
+                    selectedRowIndex = e.RowIndex;
+                    isRowSelected = true;
+
+                    // Заполняем поля данными из выбранной строки
+                    FillFieldsFromSelectedRow();
+                }
+
+                UpdateButtonStates();
+
+                if (HospitalizationIteractionForm.isSwitch)
+                {
+                    HospitalizationIteractionForm.patID = dataGridViewPatients.Rows[e.RowIndex].Cells[0].Value.ToString();
+                    this.Close();
                 }
             }
         }
 
-        // Проверка формата номера телефона при потере фокуса
-        private void maskedTextBoxPhoneNumber_Leave(object sender, EventArgs e)
+        private void FillFieldsFromSelectedRow()
         {
-            string phoneNumberText = maskedTextBoxPhoneNumber.Text.Replace("(", "").Replace(")", "").Replace("-", "").Replace(" ", "");
-            if (!Regex.IsMatch(phoneNumberText, @"^\+7\d{10}$"))
+            try
             {
-                MessageBox.Show("Неверный формат номера телефона. Пример: +7 (9XX) XXX-XX-XX", "Ошибка ввода", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                maskedTextBoxPhoneNumber.Focus();
+                using (MySqlConnection connection = new MySqlConnection(GlobalValue.GetConnString()))
+                {
+                    connection.Open();
+
+                    string snilsValue = dataGridViewPatients.Rows[selectedRowIndex].Cells["patientSnils"].Value.ToString();
+                    string query = "SELECT * FROM Patient WHERE patientSnils = @Snils";
+
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@Snils", snilsValue);
+
+                        using (MySqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                snils.Text = reader["patientSnils"].ToString();
+                                passport.Text = reader["passportNumber"].ToString();
+                                policy.Text = reader["policyNumber"].ToString();
+
+                                string[] fioParts = reader["patientFIO"].ToString().Split(' ');
+                                if (fioParts.Length >= 1) surname.Text = fioParts[0];
+                                if (fioParts.Length >= 2) name.Text = fioParts[1];
+                                if (fioParts.Length >= 3) patronymic.Text = fioParts[2];
+
+                                if (reader["patientBirthday"] != DBNull.Value)
+                                {
+                                    data.Value = Convert.ToDateTime(reader["patientBirthday"]);
+                                }
+
+                                comboBoxGender.SelectedValue = reader["genderID"];
+                                address.Text = reader["patientAddress"].ToString();
+                                phone.Text = reader["patientPhoneNumber"].ToString();
+                                comboBoxBenefit.SelectedValue = reader["benefitID"];
+                                diagnos.Text = reader["diagnosisID"].ToString();
+                                FIOrod.Text = reader["relativeFIO"].ToString();
+                                phoneRod.Text = reader["relativePhone"].ToString();
+                                rab.Text = reader["workplace"].ToString();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при загрузке данных пациента: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        // Проверка формата страхового полиса при потере фокуса
-        private void textBoxPolicy_Leave(object sender, EventArgs e)
+        private void UpdateButtonStates()
         {
-            if (!Regex.IsMatch(textBoxPolicy.Text, "^\\d{11}$"))
+            buttonAdd.Enabled = !isRowSelected;
+            buttonEdit.Enabled = isRowSelected;
+
+            if (isRowSelected)
             {
-                MessageBox.Show("Неверный формат полиса. Пример: 12345678912", "Ошибка ввода", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                textBoxPolicy.Focus();
+                buttonAdd.BackColor = SystemColors.Control;
+                buttonEdit.BackColor = Color.PowderBlue;
+            }
+            else
+            {
+                buttonAdd.BackColor = Color.PowderBlue;
+                buttonEdit.BackColor = SystemColors.Control;
             }
         }
 
-        private void button1_Click_1(object sender, EventArgs e)
+        private void buttonAdd_Click(object sender, EventArgs e)
         {
-            LoadPatientData(); // Обновление данных
-            EnableInputFields(false);
-            this.Size = new Size(1006, 520); // Возвращение формы к исходному размеру
+            isAdding = true;
+            ClearInputFields();
+            EnableInputFields(true);
+            dataGridViewPatients.ClearSelection();
+            isRowSelected = false;
+            selectedRowIndex = -1;
+            UpdateButtonStates();
+        }
+
+        private void buttonEdit_Click(object sender, EventArgs e)
+        {
+            isAdding = false;
+            EnableInputFields(true);
+        }
+
+        private void buttonExit_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void UpdateRowCount()
+        {
+            labelRowCount.Text = $"Всего записей: {dataGridViewPatients.Rows.Count}";
+        }
+
+        private void PatientsForm_Load(object sender, EventArgs e)
+        {
+            // Загрузка данных для комбобоксов
+            LoadComboBoxData();
+        }
+
+        private void LoadComboBoxData()
+        {
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(GlobalValue.GetConnString()))
+                {
+                    connection.Open();
+
+                    // Загрузка полов
+                    using (MySqlCommand command = new MySqlCommand("SELECT genderID, genderName FROM Gender", connection))
+                    {
+                        DataTable genderTable = new DataTable();
+                        MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+                        adapter.Fill(genderTable);
+
+                        comboBoxGender.DataSource = genderTable;
+                        comboBoxGender.DisplayMember = "genderName";
+                        comboBoxGender.ValueMember = "genderID";
+                    }
+
+                    // Загрузка льгот
+                    using (MySqlCommand command = new MySqlCommand("SELECT benefitID, benefitName FROM Benefits", connection))
+                    {
+                        DataTable benefitTable = new DataTable();
+                        MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+                        adapter.Fill(benefitTable);
+
+                        comboBoxBenefit.DataSource = benefitTable;
+                        comboBoxBenefit.DisplayMember = "benefitName";
+                        comboBoxBenefit.ValueMember = "benefitID";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при загрузке справочников: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

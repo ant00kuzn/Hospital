@@ -12,11 +12,10 @@ namespace Hospital
     //Объявление класса для хранения информации о пользователе
     public static class User
     {
-        public static int Id { get; set; }
+        public static string Id { get; set; }
         public static int Role { get; set; }
-        public static string Name { get; set; }
-        public static string SurName { get; set; }
-        public static string Patronymic { get; set; }
+        public static string Post { get; set; }
+        public static string Fio { get; set; }
     }
 
     public static class GlobalValue
@@ -131,6 +130,54 @@ namespace Hospital
             string pass = ConfigurationManager.AppSettings["password"];
 
             return "server=" + host + ";uid=" + uid + ";pwd=" + pass + ";";
+        }
+
+        public static string GetUserFIO(string empID)
+        {
+            try
+            {
+                MySqlConnection con = new MySqlConnection(GlobalValue.GetConnString());
+                con.Open();
+                MySqlCommand cmd = new MySqlCommand($"select employeeFIO from employee where employeeServiceNumber = '{empID}'", con);
+                string res = cmd.ExecuteScalar().ToString();
+                con.Close();
+
+                return res;
+            }
+            catch (MySqlException ex)
+            {
+                MessageBox.Show("Ошибка получения данных: " + ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return "";
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Ошибка получения данных: " + e.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return "";
+            }
+        }
+        
+        public static string GetUserPost(string empID)
+        {
+            try
+            {
+                MySqlConnection con = new MySqlConnection(GlobalValue.GetConnString());
+                con.Open();
+                MySqlCommand cmd = new MySqlCommand($"select employeePost from employee where employeeServiceNumber = '{empID}'", con);
+                string res = cmd.ExecuteScalar().ToString();
+                con.Close();
+
+                return res;
+            }
+            catch (MySqlException ex)
+            {
+                MessageBox.Show("Ошибка получения данных: " + ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return "";
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Ошибка получения данных: " + e.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return "";
+            }
         }
     }
 }

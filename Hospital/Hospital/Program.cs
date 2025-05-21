@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Hospital.Справочники;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -16,7 +18,7 @@ namespace Hospital
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new EmployeesForm());
+            Application.Run(new WardsForm());
         }
     }
 }

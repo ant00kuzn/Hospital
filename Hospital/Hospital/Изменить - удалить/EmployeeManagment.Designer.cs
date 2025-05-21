@@ -64,13 +64,14 @@ namespace Hospital
             // 
             // buttonBrowsePhoto
             // 
+            this.buttonBrowsePhoto.BackColor = System.Drawing.Color.PowderBlue;
             this.buttonBrowsePhoto.Location = new System.Drawing.Point(648, 205);
             this.buttonBrowsePhoto.Margin = new System.Windows.Forms.Padding(8);
             this.buttonBrowsePhoto.Name = "buttonBrowsePhoto";
             this.buttonBrowsePhoto.Size = new System.Drawing.Size(202, 32);
             this.buttonBrowsePhoto.TabIndex = 71;
             this.buttonBrowsePhoto.Text = "Обзор";
-            this.buttonBrowsePhoto.UseVisualStyleBackColor = true;
+            this.buttonBrowsePhoto.UseVisualStyleBackColor = false;
             this.buttonBrowsePhoto.Click += new System.EventHandler(this.BrowseButton_Click);
             // 
             // comboBoxRole

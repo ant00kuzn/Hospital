@@ -222,10 +222,10 @@ namespace Hospital
         //Закрытие формы
         private void ReportForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            if (System.Windows.Forms.Application.OpenForms["BedsForm"] is BedsForm mn)
-                mn.Show(); // Показ формы BedsForm при закрытии
-            else
-                _ = new BedsForm().ShowDialog();
+            //if (System.Windows.Forms.Application.OpenForms[""])
+            //    mn.Show(); // Показ формы BedsForm при закрытии
+            //else
+            //    _ = new BedsForm().ShowDialog();
         }
     }
 }

@@ -28,18 +28,27 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EmployeesForm));
             this.dataGridViewEmployees = new System.Windows.Forms.DataGridView();
-            this.searchTextBox = new System.Windows.Forms.RichTextBox();
-            this.roleFilterComboBox = new System.Windows.Forms.ComboBox();
+            this.tabNumber = new System.Windows.Forms.RichTextBox();
             this.labRowCount = new System.Windows.Forms.Label();
-            this.buttonNextPage = new System.Windows.Forms.Button();
-            this.buttonPreviousPage = new System.Windows.Forms.Button();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.back = new System.Windows.Forms.Button();
+            this.add = new System.Windows.Forms.Button();
+            this.edit = new System.Windows.Forms.Button();
+            this.delete = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
+            this.fio = new System.Windows.Forms.RichTextBox();
+            this.phone = new System.Windows.Forms.MaskedTextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.post = new System.Windows.Forms.RichTextBox();
+            this.dbrd = new System.Windows.Forms.DateTimePicker();
+            this.label4 = new System.Windows.Forms.Label();
+            this.photo = new System.Windows.Forms.PictureBox();
+            this.changePhoto = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewEmployees)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.photo)).BeginInit();
             this.SuspendLayout();
             // 
             // dataGridViewEmployees
@@ -53,7 +62,7 @@
             this.dataGridViewEmployees.BackgroundColor = System.Drawing.Color.White;
             this.dataGridViewEmployees.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dataGridViewEmployees.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridViewEmployees.Location = new System.Drawing.Point(11, 54);
+            this.dataGridViewEmployees.Location = new System.Drawing.Point(6, 234);
             this.dataGridViewEmployees.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.dataGridViewEmployees.MultiSelect = false;
             this.dataGridViewEmployees.Name = "dataGridViewEmployees";
@@ -61,110 +70,206 @@
             this.dataGridViewEmployees.Size = new System.Drawing.Size(1191, 507);
             this.dataGridViewEmployees.TabIndex = 0;
             this.dataGridViewEmployees.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridViewEmployees_CellClick);
-            this.dataGridViewEmployees.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridViewEmployees_CellDoubleClick);
             // 
-            // searchTextBox
+            // tabNumber
             // 
-            this.searchTextBox.Location = new System.Drawing.Point(11, 10);
-            this.searchTextBox.MaxLength = 30;
-            this.searchTextBox.Multiline = false;
-            this.searchTextBox.Name = "searchTextBox";
-            this.searchTextBox.Size = new System.Drawing.Size(610, 34);
-            this.searchTextBox.TabIndex = 1;
-            this.searchTextBox.Text = "";
-            this.searchTextBox.WordWrap = false;
-            this.searchTextBox.TextChanged += new System.EventHandler(this.SearchTextBox_TextChanged);
-            this.searchTextBox.Enter += new System.EventHandler(this.searchTextBox_Enter);
-            this.searchTextBox.Leave += new System.EventHandler(this.searchTextBox_Leave);
-            // 
-            // roleFilterComboBox
-            // 
-            this.roleFilterComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.roleFilterComboBox.FormattingEnabled = true;
-            this.roleFilterComboBox.Location = new System.Drawing.Point(627, 10);
-            this.roleFilterComboBox.Name = "roleFilterComboBox";
-            this.roleFilterComboBox.Size = new System.Drawing.Size(382, 32);
-            this.roleFilterComboBox.TabIndex = 2;
-            this.roleFilterComboBox.SelectedIndexChanged += new System.EventHandler(this.RoleFilterComboBox_SelectedIndexChanged);
+            this.tabNumber.Location = new System.Drawing.Point(178, 12);
+            this.tabNumber.MaxLength = 8;
+            this.tabNumber.Multiline = false;
+            this.tabNumber.Name = "tabNumber";
+            this.tabNumber.Size = new System.Drawing.Size(193, 34);
+            this.tabNumber.TabIndex = 1;
+            this.tabNumber.Text = "";
+            this.tabNumber.WordWrap = false;
+            this.tabNumber.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tabNumber_KeyPress);
             // 
             // labRowCount
             // 
             this.labRowCount.AutoSize = true;
-            this.labRowCount.Location = new System.Drawing.Point(7, 566);
+            this.labRowCount.Location = new System.Drawing.Point(2, 746);
             this.labRowCount.Name = "labRowCount";
             this.labRowCount.Size = new System.Drawing.Size(197, 24);
             this.labRowCount.TabIndex = 3;
             this.labRowCount.Text = "Количество записей: ";
             // 
-            // buttonNextPage
+            // back
             // 
-            this.buttonNextPage.BackColor = System.Drawing.Color.PowderBlue;
-            this.buttonNextPage.Image = ((System.Drawing.Image)(resources.GetObject("buttonNextPage.Image")));
-            this.buttonNextPage.Location = new System.Drawing.Point(171, 590);
-            this.buttonNextPage.MaximumSize = new System.Drawing.Size(33, 33);
-            this.buttonNextPage.MinimumSize = new System.Drawing.Size(33, 33);
-            this.buttonNextPage.Name = "buttonNextPage";
-            this.buttonNextPage.Size = new System.Drawing.Size(33, 33);
-            this.buttonNextPage.TabIndex = 18;
-            this.buttonNextPage.UseVisualStyleBackColor = false;
-            this.buttonNextPage.Click += new System.EventHandler(this.buttonNextPage_Click);
+            this.back.BackColor = System.Drawing.Color.PowderBlue;
+            this.back.Location = new System.Drawing.Point(1024, 790);
+            this.back.Name = "back";
+            this.back.Size = new System.Drawing.Size(173, 49);
+            this.back.TabIndex = 19;
+            this.back.Text = "В меню";
+            this.back.UseVisualStyleBackColor = false;
+            this.back.Click += new System.EventHandler(this.button1_Click);
             // 
-            // buttonPreviousPage
+            // add
             // 
-            this.buttonPreviousPage.BackColor = System.Drawing.Color.PowderBlue;
-            this.buttonPreviousPage.Image = ((System.Drawing.Image)(resources.GetObject("buttonPreviousPage.Image")));
-            this.buttonPreviousPage.Location = new System.Drawing.Point(12, 590);
-            this.buttonPreviousPage.Name = "buttonPreviousPage";
-            this.buttonPreviousPage.Size = new System.Drawing.Size(33, 33);
-            this.buttonPreviousPage.TabIndex = 17;
-            this.buttonPreviousPage.UseVisualStyleBackColor = false;
-            this.buttonPreviousPage.Click += new System.EventHandler(this.buttonPreviousPage_Click);
+            this.add.BackColor = System.Drawing.Color.PowderBlue;
+            this.add.Location = new System.Drawing.Point(6, 790);
+            this.add.Name = "add";
+            this.add.Size = new System.Drawing.Size(173, 49);
+            this.add.TabIndex = 21;
+            this.add.Text = "Добавить";
+            this.add.UseVisualStyleBackColor = false;
+            this.add.Click += new System.EventHandler(this.add_Click);
             // 
-            // toolTip1
+            // edit
             // 
-            this.toolTip1.AutoPopDelay = 10000;
-            this.toolTip1.BackColor = System.Drawing.Color.PowderBlue;
-            this.toolTip1.ForeColor = System.Drawing.Color.Black;
-            this.toolTip1.InitialDelay = 500;
-            this.toolTip1.ReshowDelay = 100;
-            this.toolTip1.ShowAlways = true;
-            this.toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.toolTip1.ToolTipTitle = "Помощь";
+            this.edit.BackColor = System.Drawing.Color.PowderBlue;
+            this.edit.Enabled = false;
+            this.edit.Location = new System.Drawing.Point(198, 790);
+            this.edit.Name = "edit";
+            this.edit.Size = new System.Drawing.Size(173, 49);
+            this.edit.TabIndex = 21;
+            this.edit.Text = "Редактировать";
+            this.edit.UseVisualStyleBackColor = false;
+            this.edit.Click += new System.EventHandler(this.edit_Click);
+            // 
+            // delete
+            // 
+            this.delete.BackColor = System.Drawing.Color.PowderBlue;
+            this.delete.Enabled = false;
+            this.delete.Location = new System.Drawing.Point(394, 790);
+            this.delete.Name = "delete";
+            this.delete.Size = new System.Drawing.Size(173, 49);
+            this.delete.TabIndex = 21;
+            this.delete.Text = "Удалить";
+            this.delete.UseVisualStyleBackColor = false;
+            this.delete.Click += new System.EventHandler(this.delete_Click);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(1182, 18);
+            this.label1.Location = new System.Drawing.Point(7, 15);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(18, 24);
-            this.label1.TabIndex = 20;
-            this.label1.Text = "?";
-            this.toolTip1.SetToolTip(this.label1, resources.GetString("label1.ToolTip"));
+            this.label1.Size = new System.Drawing.Size(165, 24);
+            this.label1.TabIndex = 22;
+            this.label1.Text = "Табельный номер";
             // 
-            // button1
+            // label2
             // 
-            this.button1.BackColor = System.Drawing.Color.PowderBlue;
-            this.button1.Location = new System.Drawing.Point(1027, 583);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(173, 33);
-            this.button1.TabIndex = 19;
-            this.button1.Text = "Назад";
-            this.button1.UseVisualStyleBackColor = false;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(7, 73);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(57, 24);
+            this.label2.TabIndex = 24;
+            this.label2.Text = "ФИО";
+            // 
+            // fio
+            // 
+            this.fio.Location = new System.Drawing.Point(70, 70);
+            this.fio.MaxLength = 30;
+            this.fio.Multiline = false;
+            this.fio.Name = "fio";
+            this.fio.Size = new System.Drawing.Size(749, 34);
+            this.fio.TabIndex = 3;
+            this.fio.Text = "";
+            this.fio.WordWrap = false;
+            this.fio.Leave += new System.EventHandler(this.fio_Leave);
+            // 
+            // phone
+            // 
+            this.phone.Location = new System.Drawing.Point(104, 127);
+            this.phone.Mask = "+7 000 000-00-00";
+            this.phone.Name = "phone";
+            this.phone.Size = new System.Drawing.Size(218, 31);
+            this.phone.TabIndex = 4;
+            this.phone.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.phone_KeyPress);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(7, 130);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(89, 24);
+            this.label5.TabIndex = 30;
+            this.label5.Text = "Телефон";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(381, 132);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(107, 24);
+            this.label6.TabIndex = 32;
+            this.label6.Text = "Должность";
+            // 
+            // post
+            // 
+            this.post.Location = new System.Drawing.Point(494, 126);
+            this.post.MaxLength = 30;
+            this.post.Multiline = false;
+            this.post.Name = "post";
+            this.post.Size = new System.Drawing.Size(325, 34);
+            this.post.TabIndex = 5;
+            this.post.Text = "";
+            this.post.WordWrap = false;
+            // 
+            // dbrd
+            // 
+            this.dbrd.Location = new System.Drawing.Point(149, 183);
+            this.dbrd.MaxDate = new System.DateTime(2007, 1, 1, 0, 0, 0, 0);
+            this.dbrd.Name = "dbrd";
+            this.dbrd.Size = new System.Drawing.Size(200, 31);
+            this.dbrd.TabIndex = 6;
+            this.dbrd.Value = new System.DateTime(2007, 1, 1, 0, 0, 0, 0);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(2, 188);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(141, 24);
+            this.label4.TabIndex = 37;
+            this.label4.Text = "Дата рождения";
+            // 
+            // photo
+            // 
+            this.photo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.photo.Image = global::Hospital.Properties.Resources.doctor_linear_icon_vector_285420161;
+            this.photo.InitialImage = null;
+            this.photo.Location = new System.Drawing.Point(857, 15);
+            this.photo.Name = "photo";
+            this.photo.Size = new System.Drawing.Size(202, 172);
+            this.photo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.photo.TabIndex = 38;
+            this.photo.TabStop = false;
+            // 
+            // changePhoto
+            // 
+            this.changePhoto.BackColor = System.Drawing.Color.PowderBlue;
+            this.changePhoto.Location = new System.Drawing.Point(857, 188);
+            this.changePhoto.Name = "changePhoto";
+            this.changePhoto.Size = new System.Drawing.Size(202, 38);
+            this.changePhoto.TabIndex = 7;
+            this.changePhoto.Text = "Изменить фото";
+            this.changePhoto.UseVisualStyleBackColor = false;
+            this.changePhoto.Click += new System.EventHandler(this.changePhoto_Click);
             // 
             // EmployeesForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1212, 628);
+            this.ClientSize = new System.Drawing.Size(1212, 846);
+            this.Controls.Add(this.changePhoto);
+            this.Controls.Add(this.photo);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.dbrd);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.post);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.phone);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.fio);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.buttonNextPage);
-            this.Controls.Add(this.buttonPreviousPage);
+            this.Controls.Add(this.delete);
+            this.Controls.Add(this.edit);
+            this.Controls.Add(this.add);
+            this.Controls.Add(this.back);
             this.Controls.Add(this.labRowCount);
-            this.Controls.Add(this.roleFilterComboBox);
-            this.Controls.Add(this.searchTextBox);
+            this.Controls.Add(this.tabNumber);
             this.Controls.Add(this.dataGridViewEmployees);
             this.Font = new System.Drawing.Font("Garamond", 15.75F);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -177,6 +282,7 @@
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.EmployeesForm_FormClosed);
             this.Load += new System.EventHandler(this.EmployeesForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewEmployees)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.photo)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -185,14 +291,23 @@
         #endregion
 
         private System.Windows.Forms.DataGridView dataGridViewEmployees;
-        private System.Windows.Forms.RichTextBox searchTextBox;
-        private System.Windows.Forms.ComboBox roleFilterComboBox;
+        private System.Windows.Forms.RichTextBox tabNumber;
         private System.Windows.Forms.Label labRowCount;
-        private System.Windows.Forms.Button buttonNextPage;
-        private System.Windows.Forms.Button buttonPreviousPage;
         private System.Windows.Forms.ToolTip toolTip2;
-        private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button back;
+        private System.Windows.Forms.Button add;
+        private System.Windows.Forms.Button edit;
+        private System.Windows.Forms.Button delete;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.RichTextBox fio;
+        private System.Windows.Forms.MaskedTextBox phone;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.RichTextBox post;
+        private System.Windows.Forms.DateTimePicker dbrd;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.PictureBox photo;
+        private System.Windows.Forms.Button changePhoto;
     }
 }

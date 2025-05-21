@@ -38,18 +38,6 @@ namespace Hospital
         {
             if (LoginAttemps == 0)
             {
-                //Если данные для входа соответствуют данным по умолчанию, то вход на форму управления бд 
-                if (textBoxLogin.Text == Properties.Settings.Default.AdminUsername && textBoxPassword.Text == Properties.Settings.Default.AdminPassword)
-                {
-                    DatabaseImport databaseImport = new DatabaseImport();
-                    this.Hide();
-                    databaseImport.ShowDialog();
-                    textBoxLogin.Text = "";
-                    textBoxPassword.Text = "";
-                    showCaptha();
-                    return;
-                }
-
                 try
                 {
                     // Попытка авторизации
@@ -189,7 +177,23 @@ namespace Hospital
 
                 Directory.CreateDirectory(backupPath);
 
-                BackupDatabase(backupPath);
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.Filter = "SQL Files (*.sql)|*.sql";
+                saveFileDialog.Title = "Сохранить резервную копию базы данных";
+                saveFileDialog.FileName = $"hospital_backup_{DateTime.Now:yyyyMMdd_HHmmss}.sql";
+
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        BackupDatabaseToSql(saveFileDialog.FileName);
+                        MessageBox.Show($"Резервная копия успешно создана: {saveFileDialog.FileName}", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Ошибка при создании резервной копии: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -198,76 +202,94 @@ namespace Hospital
             }
         }
 
-        public static void BackupDatabase(string backupPath)
+        private void BackupDatabaseToSql(string filePath)
         {
-            try
+            using (MySqlConnection connection = new MySqlConnection(GlobalValue.GetConnString()))
             {
-                using (MySqlConnection con = new MySqlConnection(GlobalValue.GetConnString()))
-                {
-                    con.Open();
+                connection.Open();
 
-                    List<string> tableNames = new List<string>();
-                    using (MySqlCommand command = new MySqlCommand("SHOW TABLES", con))
-                    using (MySqlDataReader reader = command.ExecuteReader())
+                using (StreamWriter writer = new StreamWriter(filePath, false, Encoding.UTF8))
+                {
+                    // Записываем заголовок
+                    writer.WriteLine("-- Резервная копия базы данных Hospital");
+                    writer.WriteLine($"-- Создана: {DateTime.Now}");
+                    writer.WriteLine("SET FOREIGN_KEY_CHECKS = 0;");
+                    writer.WriteLine();
+
+                    // Получаем список всех таблиц
+                    List<string> tables = new List<string>();
+                    using (MySqlCommand cmd = new MySqlCommand("SHOW TABLES", connection))
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            tableNames.Add(reader.GetString(0));
+                            tables.Add(reader.GetString(0));
                         }
                     }
 
-                    foreach (string tableName in tableNames)
-                    {
-                        string csvFilePath = Path.Combine(backupPath, $"{tableName}.csv");
-                        ExportTableToCsv(con, tableName, csvFilePath);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Ошибка при создании резервной копии базы данных: {ex.Message}");
-            }
-        }
+                    // Создаем базу данных и используем ее
+                    writer.WriteLine($"CREATE DATABASE IF NOT EXISTS `{GlobalValue.db}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+                    writer.WriteLine($"USE `{GlobalValue.db}`;");
+                    writer.WriteLine();
 
-        private static void ExportTableToCsv(MySqlConnection connection, string tableName, string filePath)
-        {
-            try
-            {
-                using (StreamWriter writer = new StreamWriter(filePath, false, System.Text.Encoding.UTF8))
-                {
-                    List<string> columnNames = new List<string>();
-                    using (MySqlCommand command = new MySqlCommand($"SHOW COLUMNS FROM `{tableName}`", connection))
-                    using (MySqlDataReader reader = command.ExecuteReader())
+                    // Для каждой таблицы
+                    foreach (string table in tables)
                     {
-                        while (reader.Read())
+                        // Получаем структуру таблицы
+                        writer.WriteLine($"-- Структура таблицы `{table}`");
+                        writer.WriteLine($"DROP TABLE IF EXISTS `{table}`;");
+
+                        using (MySqlCommand cmd = new MySqlCommand($"SHOW CREATE TABLE `{table}`", connection))
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
-                            columnNames.Add(reader.GetString("Field"));
-                        }
-                    }
-
-                    writer.WriteLine(string.Join(";", columnNames));
-
-                    using (MySqlCommand command = new MySqlCommand($"SELECT * FROM `{tableName}`", connection))
-                    using (MySqlDataReader reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            List<string> rowValues = new List<string>();
-                            for (int i = 0; i < reader.FieldCount; i++)
+                            if (reader.Read())
                             {
-                                string value = reader[i].ToString();
-                                value = value.Replace("\"", "\"\"");
-                                value = $"\"{value}\"";
-                                rowValues.Add(value);
+                                writer.WriteLine(reader.GetString("Create Table") + ";");
                             }
-                            writer.WriteLine(string.Join(",", rowValues));
                         }
+                        writer.WriteLine();
+
+                        // Получаем данные таблицы
+                        writer.WriteLine($"-- Дамп данных таблицы `{table}`");
+                        writer.WriteLine($"LOCK TABLES `{table}` WRITE;");
+                        writer.WriteLine($"/*!40000 ALTER TABLE `{table}` DISABLE KEYS */;");
+
+                        using (MySqlCommand cmd = new MySqlCommand($"SELECT * FROM `{table}`", connection))
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                StringBuilder insertQuery = new StringBuilder($"INSERT INTO `{table}` VALUES (");
+
+                                for (int i = 0; i < reader.FieldCount; i++)
+                                {
+                                    if (i > 0) insertQuery.Append(", ");
+
+                                    if (reader.IsDBNull(i))
+                                    {
+                                        insertQuery.Append("NULL");
+                                    }
+                                    else
+                                    {
+                                        string value = reader.GetValue(i).ToString();
+                                        value = value.Replace("'", "''");
+                                        insertQuery.Append($"'{value}'");
+                                    }
+                                }
+
+                                insertQuery.Append(");");
+                                writer.WriteLine(insertQuery.ToString());
+                            }
+                        }
+
+                        writer.WriteLine($"/*!40000 ALTER TABLE `{table}` ENABLE KEYS */;");
+                        writer.WriteLine("UNLOCK TABLES;");
+                        writer.WriteLine();
                     }
+
+                    writer.WriteLine("SET FOREIGN_KEY_CHECKS = 1;");
+                    writer.WriteLine("-- Конец резервной копии");
                 }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Ошибка при экспорте таблицы {tableName} в CSV: {ex.Message}");
             }
         }
 
@@ -324,7 +346,7 @@ namespace Hospital
                 // Подключение к БД и проверка учетных данных
                 MySqlConnection con = new MySqlConnection(GlobalValue.GetConnString());
                 con.Open();
-                MySqlCommand cmd = new MySqlCommand($"SELECT * FROM employee WHERE Login='{textBoxLogin.Text}' and Password='{password}'", con);
+                MySqlCommand cmd = new MySqlCommand($"SELECT * FROM user WHERE login='{textBoxLogin.Text}' and password='{password}'", con);
                 MySqlDataAdapter ad = new MySqlDataAdapter(cmd);
                 DataTable tb = new DataTable();
 
@@ -336,16 +358,16 @@ namespace Hospital
                 }
 
                 // Заполнение данных пользователя
-                User.Role = Convert.ToInt32(tb.Rows[0].ItemArray.GetValue(7).ToString());
-                User.SurName = tb.Rows[0].ItemArray.GetValue(1).ToString();
-                User.Name = tb.Rows[0].ItemArray.GetValue(2).ToString();
-                User.Patronymic = tb.Rows[0].ItemArray.GetValue(3).ToString();
+                User.Role = Convert.ToInt32(tb.Rows[0].ItemArray.GetValue(3).ToString());
+                User.Id = tb.Rows[0].ItemArray.GetValue(0).ToString();
+                User.Fio = GlobalValue.GetUserFIO(User.Id);
+                User.Post = GlobalValue.GetUserPost(User.Id);
 
                 con.Close();
 
                 return true; // Авторизация успешна
             }
-            catch
+            catch 
             {
                 return false; // Авторизация не удалась
             }

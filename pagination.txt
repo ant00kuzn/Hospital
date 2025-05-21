@@ -1,0 +1,173 @@
+//void Pagination()
+//{
+//    dataGridViewEmployees.CurrentCell = null;
+//    foreach (DataGridViewRow r in dataGridViewEmployees.Rows)
+//        r.Visible = false;
+
+//    // Узнаём сколько страниц будет
+//    int pageSize = 20; // Записей на странице
+//    int totalRows = dataGridViewEmployees.Rows.Count;
+//    int totalPages = (int)Math.Ceiling((double)totalRows / pageSize); // Используем Math.Ceiling для округления вверх
+
+//    // Обновляем UI (удаляем старые элементы пагинации)
+//    ClearPaginationUI();
+
+//    // Создаем LinkLabel для страниц
+//    LinkLabel[] ll = new LinkLabel[totalPages];
+//    int x = buttonPreviousPage.Location.X + 38;
+//    int y = 593, step = 15;
+
+//    for (int i = 0; i < totalPages; ++i)
+//    {
+//        ll[i] = new LinkLabel();
+//        ll[i].Text = Convert.ToString(i + 1);
+//        ll[i].Name = "page" + i;
+//        ll[i].ForeColor = Color.Black;
+//        ll[i].AutoSize = true;
+//        ll[i].Location = new Point(x, y);
+//        ll[i].Click += new EventHandler(LinkLabel_Click);
+//        this.Controls.Add(ll[i]);
+
+//        x += step;
+//    }
+
+//    // Устанавливаем активную страницу (подчеркивание)
+//    SetActivePage(currentNumPage, ll);
+
+//    labRowCount.Text = "Общее количество записей: " + totalRows;
+
+//    buttonNextPage.Location = totalPages > 0 ? new Point(ll[totalPages - 1].Location.X + 25, 593) : new Point(x, y); //Обработка если нет данных
+//    UpdateButtonState();
+//    DisplayData(currentNumPage, pageSize);
+//}
+
+//private void ClearPaginationUI()
+//{
+//    // Удаляем LinkLabel служащие для пагинации
+//    List<Control> controlsToRemove = new List<Control>();
+//    foreach (Control ctrl in this.Controls)
+//    {
+//        if (ctrl is LinkLabel && ctrl.Name.StartsWith("page"))
+//        {
+//            controlsToRemove.Add(ctrl);
+//        }
+//    }
+//    foreach (Control ctrl in controlsToRemove)
+//    {
+//        this.Controls.Remove(ctrl);
+//    }
+//}
+
+//private void SetActivePage(int pageNum, LinkLabel[] ll)
+//{
+//    // Сбрасываем подчеркивание у всех LinkLabel
+//    foreach (var ctrl in this.Controls)
+//    {
+//        if (ctrl is LinkLabel)
+//        {
+//            (ctrl as LinkLabel).LinkBehavior = LinkBehavior.AlwaysUnderline;
+//        }
+//    }
+
+//    // Убираем подчеркивание у активной страницы, если она существует
+//    if (ll != null && ll.Length > pageNum && pageNum >= 0)
+//    {
+//        ll[pageNum].LinkBehavior = LinkBehavior.NeverUnderline;
+//    }
+//}
+
+//// выбор страницы пагинации
+//// те строки которые нам не нужны на выбраной странице - скрываем
+//private void LinkLabel_Click(object sender, EventArgs e)
+//{
+//    dataGridViewEmployees.ClearSelection();
+//    dataGridViewEmployees.CurrentCell = null;
+
+//    // узнаём какая страница выбрана
+//    LinkLabel l = sender as LinkLabel;
+//    if (l != null)
+//    {
+//        currentNumPage = Convert.ToInt32(l.Text) - 1;
+//        Pagination(); //Перерисовываем интерфейс
+//    }
+//}
+
+//private void buttonPreviousPage_Click(object sender, EventArgs e)
+//{
+//    if (currentNumPage > 0)
+//    {
+//        currentNumPage--;
+//        Pagination();
+//    }
+//}
+
+//private void buttonNextPage_Click(object sender, EventArgs e)
+//{
+//    int pageSize = 20;
+//    int totalRows = dataGridViewEmployees.Rows.Count;
+//    int totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
+
+//    if (currentNumPage < totalPages - 1)
+//    {
+//        currentNumPage++;
+//        Pagination();
+//    }
+//}
+
+//private void DisplayData(int pageNum, int pageSize)
+//{
+//    int start = pageNum * pageSize;
+//    int end = Math.Min(start + pageSize, dataGridViewEmployees.Rows.Count); //Используем Math.Min на случай, если записей меньше, чем pageSize
+
+//    // Сначала показываем все строки, чтобы избежать проблем при переключении страниц
+//    foreach (DataGridViewRow row in dataGridViewEmployees.Rows)
+//    {
+//        row.Visible = true;
+//    }
+
+//    // Скрываем строки, которые не входят в текущую страницу
+//    for (int i = 0; i < dataGridViewEmployees.Rows.Count; i++)
+//    {
+//        dataGridViewEmployees.Rows[i].Visible = (i >= start && i < end);
+//    }
+
+//    labRowCount.Text = "Показаны записи: " + (start + 1) + " - " + end + " из " + dataGridViewEmployees.Rows.Count; //Для красоты добавил +1 к start
+
+//    dataGridViewEmployees.Refresh();
+//    UpdateButtonState();
+//}
+//private void UpdateButtonState()
+//{
+//    int pageSize = 20;
+//    int totalRows = dataGridViewEmployees.Rows.Count;
+//    int totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
+
+//    buttonPreviousPage.Enabled = (currentNumPage > 0);
+//    buttonNextPage.Enabled = (currentNumPage < totalPages - 1);
+//}
+
+//private void SearchTextBox_TextChanged(object sender, EventArgs e)
+//{
+//    if (searchTextBox.Text == "Начните ввод для поиска по фио сотрудника...")
+//        return;
+
+//    if (searchTextBox.Text.Length == 0)
+//        return;
+//    // Сначала показываем все строки, чтобы избежать проблем при переключении страниц
+//    foreach (DataGridViewRow row in dataGridViewEmployees.Rows)
+//    {
+//        row.Visible = true;
+//    }
+
+//    string filter = $"EmployeeFIO LIKE '%{searchTextBox.Text}%'"; // Фильтр по ФИО
+//    if (roleFilterComboBox.SelectedValue != null && roleFilterComboBox.SelectedIndex != 0)
+//    {
+//        filter += $" AND RoleName = '{roleFilterComboBox.SelectedValue}'"; // Фильтр по роли
+//    }
+//    dt.RowFilter = filter; // Применение фильтра
+
+//    dataGridViewEmployees.Refresh(); // Обновление DataGridView
+
+//    Pagination();
+//    currentNumPage = 0;
+//}

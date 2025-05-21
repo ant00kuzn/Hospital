@@ -38,12 +38,14 @@ namespace Hospital
             this.btnImportTable = new System.Windows.Forms.Button();
             this.cbTables = new System.Windows.Forms.ComboBox();
             this.printDialog1 = new System.Windows.Forms.PrintDialog();
+            this.button1 = new System.Windows.Forms.Button();
+            this.btnExportTable = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(8, 85);
+            this.label1.Location = new System.Drawing.Point(8, 107);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(84, 24);
             this.label1.TabIndex = 13;
@@ -51,7 +53,7 @@ namespace Hospital
             // 
             // tbFileName
             // 
-            this.tbFileName.Location = new System.Drawing.Point(198, 129);
+            this.tbFileName.Location = new System.Drawing.Point(198, 151);
             this.tbFileName.Name = "tbFileName";
             this.tbFileName.ReadOnly = true;
             this.tbFileName.Size = new System.Drawing.Size(278, 31);
@@ -61,7 +63,7 @@ namespace Hospital
             // btnExit
             // 
             this.btnExit.BackColor = System.Drawing.Color.PowderBlue;
-            this.btnExit.Location = new System.Drawing.Point(12, 203);
+            this.btnExit.Location = new System.Drawing.Point(12, 225);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(91, 39);
             this.btnExit.TabIndex = 12;
@@ -72,7 +74,7 @@ namespace Hospital
             // btnRepairStructure
             // 
             this.btnRepairStructure.BackColor = System.Drawing.Color.PowderBlue;
-            this.btnRepairStructure.Location = new System.Drawing.Point(12, 12);
+            this.btnRepairStructure.Location = new System.Drawing.Point(12, 59);
             this.btnRepairStructure.Name = "btnRepairStructure";
             this.btnRepairStructure.Size = new System.Drawing.Size(470, 39);
             this.btnRepairStructure.TabIndex = 7;
@@ -84,7 +86,7 @@ namespace Hospital
             // 
             this.btnSelectFile.BackColor = System.Drawing.Color.PowderBlue;
             this.btnSelectFile.Enabled = false;
-            this.btnSelectFile.Location = new System.Drawing.Point(12, 129);
+            this.btnSelectFile.Location = new System.Drawing.Point(12, 151);
             this.btnSelectFile.Name = "btnSelectFile";
             this.btnSelectFile.Size = new System.Drawing.Size(170, 31);
             this.btnSelectFile.TabIndex = 10;
@@ -96,7 +98,7 @@ namespace Hospital
             // 
             this.btnImportTable.BackColor = System.Drawing.Color.PowderBlue;
             this.btnImportTable.Enabled = false;
-            this.btnImportTable.Location = new System.Drawing.Point(312, 203);
+            this.btnImportTable.Location = new System.Drawing.Point(312, 225);
             this.btnImportTable.Name = "btnImportTable";
             this.btnImportTable.Size = new System.Drawing.Size(170, 39);
             this.btnImportTable.TabIndex = 11;
@@ -108,7 +110,7 @@ namespace Hospital
             // 
             this.cbTables.Enabled = false;
             this.cbTables.FormattingEnabled = true;
-            this.cbTables.Location = new System.Drawing.Point(135, 82);
+            this.cbTables.Location = new System.Drawing.Point(135, 104);
             this.cbTables.Name = "cbTables";
             this.cbTables.Size = new System.Drawing.Size(341, 32);
             this.cbTables.TabIndex = 8;
@@ -118,25 +120,47 @@ namespace Hospital
             // 
             this.printDialog1.UseEXDialog = true;
             // 
+            // button1
+            // 
+            this.button1.BackColor = System.Drawing.Color.PowderBlue;
+            this.button1.Location = new System.Drawing.Point(12, 12);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(470, 39);
+            this.button1.TabIndex = 7;
+            this.button1.Text = "Выполнить резервное копирование";
+            this.button1.UseVisualStyleBackColor = false;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // btnExportTable
+            // 
+            this.btnExportTable.BackColor = System.Drawing.Color.PowderBlue;
+            this.btnExportTable.Enabled = false;
+            this.btnExportTable.Location = new System.Drawing.Point(136, 225);
+            this.btnExportTable.Name = "btnExportTable";
+            this.btnExportTable.Size = new System.Drawing.Size(170, 39);
+            this.btnExportTable.TabIndex = 11;
+            this.btnExportTable.Text = "Экспортировать";
+            this.btnExportTable.UseVisualStyleBackColor = false;
+            this.btnExportTable.Click += new System.EventHandler(this.btnExportTable_Click);
+            // 
             // DatabaseImport
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(488, 252);
+            this.BackColor = System.Drawing.Color.White;
+            this.ClientSize = new System.Drawing.Size(488, 269);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.tbFileName);
             this.Controls.Add(this.btnExit);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.btnRepairStructure);
             this.Controls.Add(this.btnSelectFile);
+            this.Controls.Add(this.btnExportTable);
             this.Controls.Add(this.btnImportTable);
             this.Controls.Add(this.cbTables);
             this.Font = new System.Drawing.Font("Garamond", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(6);
-            this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(504, 291);
-            this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(504, 291);
             this.Name = "DatabaseImport";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Управление базой данных";
@@ -157,5 +181,7 @@ namespace Hospital
         private System.Windows.Forms.Button btnImportTable;
         private System.Windows.Forms.ComboBox cbTables;
         private System.Windows.Forms.PrintDialog printDialog1;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnExportTable;
     }
 }

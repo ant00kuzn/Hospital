@@ -19,6 +19,8 @@ namespace Hospital
         //Получение наименования базы данных
         private string db = ConfigurationManager.AppSettings["db"];
 
+        private const string BackupFolderName = "Backups";
+
         public DatabaseImport()
         {
             InitializeComponent();
@@ -43,12 +45,14 @@ namespace Hospital
             {
                 MessageBox.Show($"Ошибка подключения к базе данных: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 tbFileName.Enabled = false;
+                btnExportTable.Enabled = false;
                 return;
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Ошибка загрузки списка таблиц: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 tbFileName.Enabled = false;
+                btnExportTable.Enabled = false;
                 return;
             }
         }
@@ -69,6 +73,9 @@ namespace Hospital
             {
                 tbFileName.Text = openFileDialog.FileName;
             }
+
+            btnImportTable.Enabled = true;
+            btnExportTable.Enabled = false;
         }
 
         //Обработчик нажатия на кнопку импорта данных
@@ -234,12 +241,14 @@ namespace Hospital
         private void cbTables_SelectedIndexChanged(object sender, EventArgs e)
         {
             _ = cbTables.SelectedIndex != -1 ? btnSelectFile.Enabled = true : btnSelectFile.Enabled = false;
+            _ = cbTables.SelectedIndex != -1 ? btnExportTable.Enabled = true : btnExportTable.Enabled = false;
         }
 
         //Смена пути до файла
         private void tbFileName_TextChanged(object sender, EventArgs e)
         {
             _ = tbFileName.Text != "" ? btnImportTable.Enabled = true : btnImportTable.Enabled = false;
+            _ = tbFileName.Text != "" ? btnExportTable.Enabled = false : btnImportTable.Enabled = true;
         }
 
         //Обработчик нажатия по кнопке восстановления структуры
@@ -279,6 +288,213 @@ namespace Hospital
                 form1.Show();
             else
                 new LoginForm().Show();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "SQL Files (*.sql)|*.sql";
+            saveFileDialog.Title = "Сохранить резервную копию базы данных";
+            saveFileDialog.FileName = $"hospital_backup_{DateTime.Now:yyyyMMdd_HHmmss}.sql";
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    BackupDatabaseToSql(saveFileDialog.FileName);
+                    MessageBox.Show($"Резервная копия успешно создана: {saveFileDialog.FileName}", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка при создании резервной копии: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void BackupDatabaseToSql(string filePath)
+        {
+            using (MySqlConnection connection = new MySqlConnection(GlobalValue.GetConnString()))
+            {
+                connection.Open();
+
+                using (StreamWriter writer = new StreamWriter(filePath, false, Encoding.UTF8))
+                {
+                    // Записываем заголовок
+                    writer.WriteLine("-- Резервная копия базы данных Hospital");
+                    writer.WriteLine($"-- Создана: {DateTime.Now}");
+                    writer.WriteLine("SET FOREIGN_KEY_CHECKS = 0;");
+                    writer.WriteLine();
+
+                    // Получаем список всех таблиц
+                    List<string> tables = new List<string>();
+                    using (MySqlCommand cmd = new MySqlCommand("SHOW TABLES", connection))
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            tables.Add(reader.GetString(0));
+                        }
+                    }
+
+                    // Создаем базу данных и используем ее
+                    writer.WriteLine($"CREATE DATABASE IF NOT EXISTS `{db}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+                    writer.WriteLine($"USE `{db}`;");
+                    writer.WriteLine();
+
+                    // Для каждой таблицы
+                    foreach (string table in tables)
+                    {
+                        // Получаем структуру таблицы
+                        writer.WriteLine($"-- Структура таблицы `{table}`");
+                        writer.WriteLine($"DROP TABLE IF EXISTS `{table}`;");
+
+                        using (MySqlCommand cmd = new MySqlCommand($"SHOW CREATE TABLE `{table}`", connection))
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                writer.WriteLine(reader.GetString("Create Table") + ";");
+                            }
+                        }
+                        writer.WriteLine();
+
+                        // Получаем данные таблицы
+                        writer.WriteLine($"-- Дамп данных таблицы `{table}`");
+                        writer.WriteLine($"LOCK TABLES `{table}` WRITE;");
+                        writer.WriteLine($"/*!40000 ALTER TABLE `{table}` DISABLE KEYS */;");
+
+                        using (MySqlCommand cmd = new MySqlCommand($"SELECT * FROM `{table}`", connection))
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                StringBuilder insertQuery = new StringBuilder($"INSERT INTO `{table}` VALUES (");
+
+                                for (int i = 0; i < reader.FieldCount; i++)
+                                {
+                                    if (i > 0) insertQuery.Append(", ");
+
+                                    if (reader.IsDBNull(i))
+                                    {
+                                        insertQuery.Append("NULL");
+                                    }
+                                    else
+                                    {
+                                        string value = reader.GetValue(i).ToString();
+                                        value = value.Replace("'", "''");
+                                        insertQuery.Append($"'{value}'");
+                                    }
+                                }
+
+                                insertQuery.Append(");");
+                                writer.WriteLine(insertQuery.ToString());
+                            }
+                        }
+
+                        writer.WriteLine($"/*!40000 ALTER TABLE `{table}` ENABLE KEYS */;");
+                        writer.WriteLine("UNLOCK TABLES;");
+                        writer.WriteLine();
+                    }
+
+                    writer.WriteLine("SET FOREIGN_KEY_CHECKS = 1;");
+                    writer.WriteLine("-- Конец резервной копии");
+                }
+            }
+        }
+
+        private void btnExportTable_Click(object sender, EventArgs e)
+        {
+            // Проверка, что таблица выбрана
+            if (cbTables.SelectedIndex == -1)
+            {
+                MessageBox.Show("Пожалуйста, выберите таблицу для экспорта.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            string tableName = cbTables.SelectedItem.ToString();
+
+            // Настройка диалога сохранения файла
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "CSV Files (*.csv)|*.csv";
+            saveFileDialog.Title = "Экспорт таблицы в CSV";
+            saveFileDialog.FileName = $"{tableName}_export_{DateTime.Now:yyyyMMdd_HHmmss}.csv";
+            saveFileDialog.OverwritePrompt = true;
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    ExportTableToCsv(tableName, saveFileDialog.FileName);
+                    MessageBox.Show($"Таблица '{tableName}' успешно экспортирована в файл: {saveFileDialog.FileName}",
+                                  "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка при экспорте таблицы: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void ExportTableToCsv(string tableName, string filePath)
+        {
+            using (MySqlConnection connection = new MySqlConnection(GlobalValue.GetConnString()))
+            {
+                connection.Open();
+
+                // Получаем названия столбцов
+                List<string> columnNames = new List<string>();
+                using (MySqlCommand cmd = new MySqlCommand(
+                    $"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = @db AND TABLE_NAME = @table ORDER BY ORDINAL_POSITION",
+                    connection))
+                {
+                    cmd.Parameters.AddWithValue("@db", db);
+                    cmd.Parameters.AddWithValue("@table", tableName);
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            columnNames.Add(reader.GetString(0));
+                        }
+                    }
+                }
+
+                // Записываем данные в файл
+                using (StreamWriter writer = new StreamWriter(filePath, false, Encoding.UTF8))
+                {
+                    // Записываем заголовки столбцов
+                    writer.WriteLine(string.Join(";", columnNames));
+
+                    // Получаем и записываем данные
+                    using (MySqlCommand cmd = new MySqlCommand($"SELECT * FROM `{tableName}`", connection))
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            List<string> rowValues = new List<string>();
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                if (reader.IsDBNull(i))
+                                {
+                                    rowValues.Add("");
+                                }
+                                else
+                                {
+                                    string value = reader.GetValue(i).ToString();
+                                    // Экранируем кавычки и сами значения заключаем в кавычки, если содержат разделитель
+                                    value = value.Replace("\"", "\"\"");
+                                    if (value.Contains(";") || value.Contains("\n") || value.Contains("\r"))
+                                    {
+                                        value = $"\"{value}\"";
+                                    }
+                                    rowValues.Add(value);
+                                }
+                            }
+                            writer.WriteLine(string.Join(";", rowValues));
+                        }
+                    }
+                }
+            }
         }
     }
 }
