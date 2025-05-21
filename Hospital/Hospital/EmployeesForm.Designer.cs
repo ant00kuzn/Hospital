@@ -57,6 +57,9 @@
             this.dataGridViewEmployees.AllowUserToDeleteRows = false;
             this.dataGridViewEmployees.AllowUserToResizeColumns = false;
             this.dataGridViewEmployees.AllowUserToResizeRows = false;
+            this.dataGridViewEmployees.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridViewEmployees.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridViewEmployees.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.dataGridViewEmployees.BackgroundColor = System.Drawing.Color.White;
@@ -67,9 +70,10 @@
             this.dataGridViewEmployees.MultiSelect = false;
             this.dataGridViewEmployees.Name = "dataGridViewEmployees";
             this.dataGridViewEmployees.ReadOnly = true;
-            this.dataGridViewEmployees.Size = new System.Drawing.Size(1191, 507);
+            this.dataGridViewEmployees.Size = new System.Drawing.Size(1251, 507);
             this.dataGridViewEmployees.TabIndex = 0;
             this.dataGridViewEmployees.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridViewEmployees_CellClick);
+            this.dataGridViewEmployees.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridViewEmployees_CellDoubleClick);
             // 
             // tabNumber
             // 
@@ -85,6 +89,7 @@
             // 
             // labRowCount
             // 
+            this.labRowCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.labRowCount.AutoSize = true;
             this.labRowCount.Location = new System.Drawing.Point(2, 746);
             this.labRowCount.Name = "labRowCount";
@@ -140,8 +145,9 @@
             // 
             // label1
             // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(7, 15);
+            this.label1.Location = new System.Drawing.Point(1182, 18);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(165, 24);
             this.label1.TabIndex = 22;
@@ -238,31 +244,21 @@
             // 
             // changePhoto
             // 
-            this.changePhoto.BackColor = System.Drawing.Color.PowderBlue;
-            this.changePhoto.Location = new System.Drawing.Point(857, 188);
-            this.changePhoto.Name = "changePhoto";
-            this.changePhoto.Size = new System.Drawing.Size(202, 38);
-            this.changePhoto.TabIndex = 7;
-            this.changePhoto.Text = "Изменить фото";
-            this.changePhoto.UseVisualStyleBackColor = false;
-            this.changePhoto.Click += new System.EventHandler(this.changePhoto_Click);
+            this.button1.BackColor = System.Drawing.Color.PowderBlue;
+            this.button1.Location = new System.Drawing.Point(1027, 583);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(173, 33);
+            this.button1.TabIndex = 19;
+            this.button1.Text = "Назад";
+            this.button1.UseVisualStyleBackColor = false;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // EmployeesForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1212, 846);
-            this.Controls.Add(this.changePhoto);
-            this.Controls.Add(this.photo);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.dbrd);
-            this.Controls.Add(this.label6);
-            this.Controls.Add(this.post);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.phone);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.fio);
+            this.ClientSize = new System.Drawing.Size(1212, 628);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.delete);
             this.Controls.Add(this.edit);
@@ -274,11 +270,12 @@
             this.Font = new System.Drawing.Font("Garamond", 15.75F);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(1920, 1280);
+            this.MinimumSize = new System.Drawing.Size(1290, 663);
             this.Name = "EmployeesForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Сотрудники";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.EmployeesForm_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.EmployeesForm_FormClosed);
             this.Load += new System.EventHandler(this.EmployeesForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewEmployees)).EndInit();

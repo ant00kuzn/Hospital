@@ -18,6 +18,7 @@ namespace Hospital
         public static string Fio { get; set; }
     }
 
+    //Глобальные переменные
     public static class GlobalValue
     {
         public static bool dbIsntExist = false;

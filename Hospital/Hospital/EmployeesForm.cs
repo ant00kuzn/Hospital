@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using MySql.Data.MySqlClient;
 using ToolTip = System.Windows.Forms.ToolTip;
+using System.Configuration;
 using System.IO;
 
 namespace Hospital
@@ -19,9 +20,79 @@ namespace Hospital
     {
         private bool isAddingNew = false;
 
+        private DateTime lastActivity = DateTime.Now; //Последняя активность пользователя
+        private Timer inactive; //Таймер
+        private bool fclosed = false; //Активна ли щас эта форма
+
+        private int selectedRowIndex = -1;
+        private int currentNumPage = 0;
+
         public EmployeesForm()
         {
-            InitializeComponent();
+            InitializeComponent(); // Инициализация компонентов
+
+            //Создаем новый таймер
+            inactive = new Timer();
+            inactive.Interval = 1000;
+            inactive.Tick += Inactive_Tick;
+
+            //Если пользователь что-то сделал сбрасываем таймер
+            this.MouseMove += ActivityOccured;
+            this.KeyDown += ActivityOccured;
+            this.MouseClick += ActivityOccured;
+            this.MouseWheel += ActivityOccured;
+            this.Move += ActivityOccured;
+            this.MouseCaptureChanged += ActivityOccured;
+            this.LostFocus += LostFocu;
+            this.GotFocus += ActivityOccured;
+        }
+
+        //метод обработки сброса таймера по действию пользователя
+        private void ActivityOccured(object sender, EventArgs e)
+        {
+            ResetInactivityTimer();
+        }
+
+        private void LostFocu(object sender, EventArgs e)
+        {
+            fclosed = true;
+            inactive.Stop();
+        }
+
+        //Тик таймера с проверкой на истечение таймера
+        private void Inactive_Tick(object sender, EventArgs e)
+        {
+            if((DateTime.Now - lastActivity).TotalSeconds > Convert.ToInt32(ConfigurationManager.AppSettings["timerInactive"]))
+            {
+                LockSystem();
+            }
+        }
+
+        //Блокировка системы (переброс на форму авторизации)
+        private void LockSystem()
+        {
+            if (!fclosed)
+            {
+                fclosed = true;
+                inactive.Stop();
+
+                LoginForm ll = new LoginForm(true);
+                this.Hide();
+                
+                ll.ShowDialog();
+
+                this.Show();
+
+                fclosed = false;
+                ResetInactivityTimer();
+                inactive.Start();
+            }
+        }
+
+        //Сброс таймера
+        private void ResetInactivityTimer()
+        {
+            lastActivity = DateTime.Now;
         }
 
         private void LoadEmployeeData()
@@ -252,6 +323,7 @@ namespace Hospital
 
             return true;
         }
+        #endregion
 
         private void add_Click(object sender, EventArgs e)
         {
@@ -469,6 +541,13 @@ namespace Hospital
             // При получении фокуса перемещаем курсор в начало
             if (phone.Text.Length == 0)
                 phone.SelectionStart = 0;
+        }
+
+        //Остановка таймера
+        private void EmployeesForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            inactive.Stop();
+            inactive.Dispose();
         }
     }
 }

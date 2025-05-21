@@ -144,6 +144,7 @@ namespace Hospital
             }
         }
 
+        //Отображение капчи
         public void showCaptha()
         {
             this.Size = new Size(295, 469);
@@ -152,6 +153,7 @@ namespace Hospital
             pictureCaptha.Visible = true;
         }
 
+        //Скрытие капчи
         public void resetCaptha()
         {
             this.Size = new Size(295, 324);
@@ -391,14 +393,23 @@ namespace Hospital
         // Обработчик закрытия формы
         private void LoginForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            AutomaticBackup();
-            // Подтверждение выхода из приложения
-            if (DialogResult.Yes == MessageBox.Show("Вы действительно хотите выйти?", "Подтверждение", MessageBoxButtons.YesNo, MessageBoxIcon.Information))
-                e.Cancel = false; // Закрытие формы
+            if (!inactive)
+            {
+                AutomaticBackup();
+                // Подтверждение выхода из приложения
+                if (DialogResult.Yes == MessageBox.Show("Вы действительно хотите выйти?", "Подтверждение", MessageBoxButtons.YesNo, MessageBoxIcon.Information))
+                    e.Cancel = false; // Закрытие формы
+                else
+                    e.Cancel = true; // Отмена закрытия формы
+            }
             else
-                e.Cancel = true; // Отмена закрытия формы
+            {
+                inactive = false;
+                e.Cancel = false;
+            }
         }
 
+        //Обноление капчи
         private void picatureReloadCaptcha_Click(object sender, EventArgs e)
         {
             richTextBoxCaptcha.Text = "";

@@ -9,11 +9,19 @@ using System.Threading.Tasks;
 
 namespace Hospital
 {
+    /// <summary>
+    /// Класс для генерации капчи
+    /// </summary>
     public class CapthaGenerate
     {
         public static string generatedCaptha = "";
 
-
+        /// <summary>
+        /// Вызываемый метод генерации капчи
+        /// </summary>
+        /// <param name="width">Ширина капчи</param>
+        /// <param name="height">Высота капчи</param>
+        /// <returns>Изображение капчи</returns>
         public static Bitmap Gena(int width, int height)
         {
             Random random = new Random();
